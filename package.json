@@ -1,0 +1,8 @@
+{
+  "name": "carotte-env-validation",
+  "version": "0.1.0",
+  "description": "Validate process.env variables",
+  "main": "src/index.js",
+  "repository": "https://github.com/cubyn/carotte-env-validation",
+  "license": "ISC"
+}
