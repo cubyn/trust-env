@@ -1,8 +1,26 @@
 {
-  "name": "carotte-env-validation",
+  "name": "@devcubyn/carotte-env-validation",
   "version": "0.1.0",
   "description": "Validate process.env variables",
   "main": "src/index.js",
-  "repository": "https://github.com/cubyn/carotte-env-validation",
-  "license": "ISC"
+  "repository": "git@github.com:cubyn/carotte-env-validation",
+  "license": "ISC",
+  "scripts": {
+    "test": "jest --runInBand --detectOpenHandles --globalSetup ./tests/index.js --forceExit",
+    "test:watch": "jest --runInBand --detectOpenHandles --watch --globalSetup ./tests/index.js",
+    "test:cover": "jest --runInBand --detectOpenHandles --reporters=default --reporters=jest-junit --coverage --globalSetup ./tests/index.js --coverageDirectory=./coverage --forceExit",
+    "lint": "./node_modules/.bin/eslint src tests"
+  },
+  "devDependencies": {
+    "eslint": "^6.0.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-cubyn": "^2.2.1",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-jest": "^22.7.1",
+    "eslint-plugin-unicorn": "^9.1.1",
+    "jest": "^24.8.0"
+  },
+  "dependencies": {
+    "dotenv": "^8.0.0"
+  }
 }

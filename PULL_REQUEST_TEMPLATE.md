@@ -1,0 +1,15 @@
+## [Context](*JIRA link here*)
+
+**WHAT_TRIGGERED_THIS_DEVELOPMENT**
+
+## Implementation details
+
+**HOW_DID_YOU_DECIDE_TO_SOLVE_THIS**
+
+## Content
+
+**WHAT_MAGIC_INCANTATIONS_DID_YOU_PERFORM**
+
+## Remarks
+
+**WHAT_REVIEWERS_NEED_TO_BE_ATTENTIVE_TO**
