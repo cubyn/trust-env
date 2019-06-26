@@ -11,6 +11,9 @@
     "test:cover": "jest --runInBand --detectOpenHandles --reporters=default --reporters=jest-junit --coverage --globalSetup ./tests/index.js --coverageDirectory=./coverage --forceExit",
     "lint": "./node_modules/.bin/eslint src tests"
   },
+  "dependencies": {
+    "@devcubyn/core.errors": "^0.4.0"
+  },
   "devDependencies": {
     "eslint": "^6.0.1",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -18,9 +21,7 @@
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-jest": "^22.7.1",
     "eslint-plugin-unicorn": "^9.1.1",
-    "jest": "^24.8.0"
-  },
-  "dependencies": {
-    "dotenv": "^8.0.0"
+    "jest": "^24.8.0",
+    "jest-junit": "^6.4.0"
   }
 }
