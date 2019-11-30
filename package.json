@@ -11,9 +11,6 @@
     "test:cover": "jest --coverage --runInBand",
     "lint": "./node_modules/.bin/eslint src tests"
   },
-  "dependencies": {
-    "@devcubyn/core.errors": "^0.4.0"
-  },
   "devDependencies": {
     "eslint": "^6.0.1",
     "eslint-config-airbnb-base": "^14.0.0",

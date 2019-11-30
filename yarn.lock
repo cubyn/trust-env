@@ -138,11 +138,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@devcubyn/core.errors@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@devcubyn/core.errors/-/core.errors-0.4.0.tgz#fddf0518b74a2962670c352f45f048d5121c95b2"
-  integrity sha512-8W4hK3nYrIkMVyyiQzk6MSE/oaVE5YDqaPziX4o8+lspCHO63gqsQxwVIpKkFU01mxvKTo8XWHSAIsdDMbTA2Q==
-
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.9.0.tgz#79b1bc06fb74a8cfb01cbdedf945584b1b9707f0"
