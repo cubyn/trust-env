@@ -1,9 +1,13 @@
-const { assert, ServerError, EnvValidationError } = require('./modules/errors');
+const { ProcessEnvError } = require('./errors');
 
 module.exports = ({ error, parsed }) => {
-  assert(!error, ServerError, error);
+  if (error) {
+    throw new Error(error);
+  }
 
   Object.entries(parsed).forEach(([key, value]) => {
-    assert(value, EnvValidationError, key);
+    if (!value) {
+      throw new ProcessEnvError(key);
+    }
   });
 };
