@@ -6,9 +6,9 @@
   "repository": "git@github.com:cubyn/carotte-env-validation",
   "license": "ISC",
   "scripts": {
-    "test": "jest --runInBand",
-    "test:watch": "jest --watch --runInBand",
-    "test:cover": "jest --coverage --runInBand",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cover": "jest --coverage",
     "lint": "./node_modules/.bin/eslint src tests"
   },
   "devDependencies": {
