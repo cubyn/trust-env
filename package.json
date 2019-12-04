@@ -1,6 +1,6 @@
 {
   "name": "@devcubyn/carotte-env-validation",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Validate process.env variables",
   "main": "src/index.js",
   "repository": "git@github.com:cubyn/carotte-env-validation",
