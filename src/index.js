@@ -44,7 +44,10 @@ const validate = (contract) => {
   throw new Error(validations);
 };
 
+const get = variable => process.env[variable];
+
 // module.exports = (contract, { logger = console } = { logger: console }) => {
 module.exports = {
   validate,
+  get,
 };
