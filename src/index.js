@@ -13,11 +13,27 @@ const isJs = require('is_js');
 //   // transform: () => {},
 // }];
 
+let contract = [];
+
 const isValid = () => true;
 
 const validateType = declaration => isJs[declaration.type](process.env[declaration.variable]);
 
-const validate = (contract) => {
+// TODO variable must be unique
+const findByVariable = variable => contract.find(declaration => declaration.variable === variable);
+
+// TODO freeze contract?
+const config = (contractParam) => {
+  contract = contractParam;
+
+  return module.exports;
+};
+
+const validate = () => {
+  if (!contract || !contract.length) {
+    throw new Error();
+  }
+
   const validations = contract.map((declaration) => {
     if (!isValid(declaration)) {
       throw new Error();
@@ -44,10 +60,37 @@ const validate = (contract) => {
   throw new Error(validations);
 };
 
-const get = variable => process.env[variable];
+const get = (variable) => {
+  if (!contract || !contract.length) {
+    throw new Error();
+  }
+
+  const declaration = findByVariable(variable);
+
+  if (!declaration) {
+    throw new Error();
+  }
+
+  if (!isValid(declaration)) {
+    throw new Error();
+  }
+
+  const value = process.env[variable];
+
+  if (!value) {
+    if (declaration.default) {
+      return declaration.default;
+    }
+
+    throw new Error();
+  }
+
+  return value;
+};
 
 // module.exports = (contract, { logger = console } = { logger: console }) => {
 module.exports = {
+  config,
   validate,
   get,
 };
