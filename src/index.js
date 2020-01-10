@@ -13,10 +13,16 @@ const isJs = require('is_js');
 //   // transform: () => {},
 // }];
 
+const isValid = () => true;
+
 const validateType = declaration => isJs[declaration.type](process.env[declaration.variable]);
 
 const validate = (contract) => {
   const validations = contract.map((declaration) => {
+    if (!isValid(declaration)) {
+      throw new Error();
+    }
+
     if (declaration.type) {
       return validateType(declaration);
     }

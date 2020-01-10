@@ -56,6 +56,7 @@ describe('src/index.js', () => {
         variable: 'DB_HOST',
         type: 'string',
       }];
+
       expect(env.validate(CONTRACT)).toBe(true);
     });
   });
