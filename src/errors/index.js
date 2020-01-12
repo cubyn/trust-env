@@ -1,5 +1,5 @@
-const ProcessEnvError = require('./process-env-error');
+const CarotteEnvContractDuplicateEntries = require('./contract-duplicate-entries');
 
 module.exports = {
-  ProcessEnvError,
+  CarotteEnvContractDuplicateEntries,
 };

@@ -1,63 +1,63 @@
 const isJs = require('is_js');
+const errors = require('./errors');
 
-// TODO not possible to have both default and required options
-// const CONTRACT = [{
-//   variable: 'DB_HOST',
-//   type: 'string',
-//   // required: true,
-//   // default: '',
-//   // Called at runtime only
-//   // Option to call it each time
-//   // validate: () => {},
-//   // Call each time
-//   // transform: () => {},
-// }];
+// TODO Give a type make it required?
+//   No (e.g: type null or undefined)
+// TODO transform()
+// TODO variable must be unique in contract
+// TODO Required is not compatible several types (e.g: null or undfined)
+
+// Type is required
+//
+// Value is not found:
+//   if type === undefined => OK
+//   else => KO
 
 let contract = [];
 
-const isValid = () => true;
+const validateDefaultType = declaration => isJs[declaration.type](declaration.default);
 
-const validateType = declaration => isJs[declaration.type](process.env[declaration.variable]);
+const validateValueType = ({ type, variable }) => isJs[type](process.env[variable]);
 
-// TODO variable must be unique
-const findByVariable = variable => contract.find(declaration => declaration.variable === variable);
+const findByVariable = (variable) => {
+  const declarations = contract.filter(declaration => declaration.variable === variable);
 
-// TODO freeze contract?
-const config = (contractParam) => {
-  contract = contractParam;
-
-  return module.exports;
-};
-
-const validate = () => {
-  if (!contract || !contract.length) {
+  if (declarations.length > 1) {
+    throw new errors.CarotteEnvContractDuplicateEntries(contract, declarations);
+  } else if (declarations.length === 0) {
     throw new Error();
   }
 
-  const validations = contract.map((declaration) => {
-    if (!isValid(declaration)) {
-      throw new Error();
-    }
+  return declarations[0];
+};
 
-    if (declaration.type) {
-      return validateType(declaration);
-    }
+const assertDeclarationValid = (declaration) => {
+  const defaultRightType = validateDefaultType(declaration);
+
+  // Default is not the same type as declared type
+  if (declaration.default && !defaultRightType) {
+    throw new Error();
+  }
+};
+
+const validate = (contractParam) => {
+  contract = contractParam;
+
+  const declarationsValidations = contract.map((declaration) => {
+    assertDeclarationValid(declaration);
 
     if (declaration.validate) {
       return declaration.validate(declaration);
     }
 
-    // TODO Custom error
-    throw new Error();
+    return true;
   });
 
-  const allValid = validations.every(validation => validation === true);
+  const allValid = declarationsValidations.every(validation => validation === true);
 
-  if (allValid) {
-    return allValid;
+  if (!allValid) {
+    throw new Error();
   }
-
-  throw new Error(validations);
 };
 
 const get = (variable) => {
@@ -67,30 +67,22 @@ const get = (variable) => {
 
   const declaration = findByVariable(variable);
 
-  if (!declaration) {
-    throw new Error();
+  // TODO validate by type or validate function if exists
+  // if (!validateValueType(declaration)) {
+  //   throw new Error();
+  // }
+
+  const envValue = process.env[declaration.variable];
+  const result = envValue || declaration.default;
+
+  if (result) {
+    return result;
   }
 
-  if (!isValid(declaration)) {
-    throw new Error();
-  }
-
-  const value = process.env[variable];
-
-  if (!value) {
-    if (declaration.default) {
-      return declaration.default;
-    }
-
-    throw new Error();
-  }
-
-  return value;
+  throw new Error();
 };
 
-// module.exports = (contract, { logger = console } = { logger: console }) => {
 module.exports = {
-  config,
   validate,
-  get,
+  getEnv: get,
 };
