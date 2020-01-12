@@ -1,5 +1,11 @@
 const isJs = require('is_js');
-const errors = require('./errors');
+const {
+  ContractNotFoundError,
+  DefaultInvalidTypeError,
+  DuplicateEntriesError,
+  EntryNotFoundError,
+  ResultNotFoundError,
+} = require('./errors');
 
 // TODO Give a type make it required?
 //   No (e.g: type null or undefined)
@@ -15,25 +21,45 @@ const validateValueType = ({ type, variable }) => isJs[type](process.env[variabl
 const findByVariable = (variable) => {
   const declarations = contract.filter(declaration => declaration.variable === variable);
 
+  // Should not occurs (validated in #config)
   if (declarations.length > 1) {
-    throw new errors.ContractDuplicateEntriesError(contract, declarations);
+    throw new DuplicateEntriesError(contract, [variable]);
   } else if (declarations.length === 0) {
-    throw new errors.ContractNotFoundEntryError(contract, variable);
+    throw new EntryNotFoundError(contract, variable);
   }
 
   return declarations[0];
 };
 
+const assertNoDuplicatesEntries = (contract) => {
+  const duplicates = contract
+    .map(({ variable }) => variable)
+    .reduce((acc, element, i, arr) => {
+      if (arr.indexOf(element) !== i && acc.includes(element)) {
+        acc.push(element);
+      }
+
+      return acc;
+    }, []);
+
+  if (duplicates.length) {
+    throw new DuplicateEntriesError(contract, duplicates);
+  }
+};
+
 const assertDeclarationValid = (declaration) => {
   const defaultRightType = validateDefaultType(declaration);
 
-  // "default" is not the same type as the "type"
   if (declaration.defaultValue && !defaultRightType) {
-    throw new errors.DeclarationDefaultNotRightTypeError(declaration.default, declaration.type);
+    throw new DefaultInvalidTypeError(declaration.defaultValue, declaration.type);
   }
 };
 
 const config = (contractParam) => {
+  if (!contractParam || !contractParam.length) {
+    throw new ContractNotFoundError();
+  }
+
   // "default" keyword is annoying to works with
   // Internally renames in "defaultValue"
   contract = contractParam.map(({ variable, type, default: defaultValue, validate, transform }) => ({
@@ -43,6 +69,8 @@ const config = (contractParam) => {
     transform,
     defaultValue,
   }));
+
+  assertNoDuplicatesEntries(contract);
 
   const declarationsValidations = contract.map((declaration) => {
     assertDeclarationValid(declaration);
@@ -61,9 +89,9 @@ const config = (contractParam) => {
   }
 };
 
-const getEnv = (variable) => {
+const get = (variable) => {
   if (!contract || !contract.length) {
-    throw new errors.ContractNotFoundError();
+    throw new ContractNotFoundError();
   }
 
   const { defaultValue, transform } = findByVariable(variable);
@@ -83,10 +111,10 @@ const getEnv = (variable) => {
     return result;
   }
 
-  throw new Error();
+  throw new ResultNotFoundError(variable);
 };
 
 module.exports = {
   config,
-  getEnv,
+  get,
 };

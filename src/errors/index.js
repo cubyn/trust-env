@@ -1,11 +1,13 @@
-const ContractDuplicateEntriesError = require('./contract-duplicate-entries-error');
 const ContractNotFoundError = require('./contract-not-found-error');
-const ContractNotFoundEntryError = require('./contract-not-found-entry-error');
-const DeclarationDefaultNotRightTypeError = require('./declaration-default-not-right-type-error');
+const DefaultInvalidTypeError = require('./default-invalid-type-error');
+const DuplicateEntriesError = require('./duplicate-entries-error');
+const EntryNotFoundError = require('./entry-not-found-error');
+const ResultNotFoundError = require('./result-not-found-error');
 
 module.exports = {
-  ContractDuplicateEntriesError,
   ContractNotFoundError,
-  ContractNotFoundEntryError,
-  DeclarationDefaultNotRightTypeError,
+  DefaultInvalidTypeError,
+  DuplicateEntriesError,
+  EntryNotFoundError,
+  ResultNotFoundError,
 };

@@ -1,6 +1,6 @@
-module.exports = class DeclarationDefaultNotRightTypeError extends Error {
+module.exports = class DefaultInvalidTypeError extends Error {
   constructor(defaultValue, type) {
-    super(`Default ${defaultValue} is not the right type (${type})`);
+    super(`Default ${defaultValue} is invalid type. ${type} expected`);
 
     this.name = this.constructor.name;
     this.defaultValue = defaultValue;

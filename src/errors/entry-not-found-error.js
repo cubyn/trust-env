@@ -1,4 +1,4 @@
-module.exports = class CarotteEnvContractNotFoundEntryError extends Error {
+module.exports = class EntryNotFoundError extends Error {
   constructor(contract, variable) {
     super(`Variable ${variable} not found in contract`);
 
