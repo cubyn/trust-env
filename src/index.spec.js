@@ -8,7 +8,7 @@ describe('src/index.js', () => {
     process.env.DB_HOST = 'localhost';
   });
 
-  describe('#validate', () => {
+  describe('#config', () => {
     describe('type keyword', () => {
       describe('when the type is unknow', () => {
         it.todo('throws');
@@ -29,7 +29,7 @@ describe('src/index.js', () => {
               default: 1,
             }];
 
-            expect(() => env.validate(contract)).toThrow();
+            expect(() => env.config(contract)).toThrow();
           });
         });
       });
@@ -63,7 +63,7 @@ describe('src/index.js', () => {
             type: 'char',
           },
         ];
-        env.validate(contract);
+        env.config(contract);
       });
 
       it('throws with CarotteEnvContractDuplicateEntries', () => {
@@ -78,7 +78,7 @@ describe('src/index.js', () => {
           variable: 'DB_HOST',
           type: 'string',
         }];
-        env.validate(contract);
+        env.config(contract);
       });
 
       it('throws with CarotteEnvContractNotFoundEntry', () => {
@@ -89,7 +89,7 @@ describe('src/index.js', () => {
 
     describe('when the process.env value is found', () => {
       beforeEach(() => {
-        env.validate([{
+        env.config([{
           variable: 'DB_HOST',
           type: 'string',
         }]);
@@ -103,7 +103,7 @@ describe('src/index.js', () => {
     describe('when the process.env value is not found', () => {
       describe('when there is default', () => {
         beforeEach(() => {
-          env.validate([{
+          env.config([{
             variable: 'DB_USER',
             type: 'string',
             default: 'root',
@@ -117,7 +117,7 @@ describe('src/index.js', () => {
 
       describe('when there is no default', () => {
         beforeEach(() => {
-          env.validate([{
+          env.config([{
             variable: 'DB_USER',
             type: 'string',
           }]);

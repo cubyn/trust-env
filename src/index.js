@@ -40,8 +40,16 @@ const assertDeclarationValid = (declaration) => {
   }
 };
 
-const validate = (contractParam) => {
-  contract = contractParam;
+const config = (contractParam) => {
+  // "default" keyword is annoying to works with
+  // Internally renames in "defaultValue"
+  contract = contractParam.map(({ variable, type, default: defaultValue, validate, transform }) => ({
+    variable,
+    type,
+    validate,
+    transform,
+    defaultValue,
+  }));
 
   const declarationsValidations = contract.map((declaration) => {
     assertDeclarationValid(declaration);
@@ -58,16 +66,6 @@ const validate = (contractParam) => {
   if (!allValid) {
     throw new Error();
   }
-
-  // "default" keyword is annoying to works with
-  // Internally renames in "defaultValue"
-  contract.map((declaration) => {
-    const decl = declaration;
-    const defaultValue = decl.default;
-    delete decl.default;
-
-    return { ...decl, defaultValue };
-  });
 };
 
 const get = (variable) => {
@@ -81,7 +79,6 @@ const get = (variable) => {
   // if (!validateValueType(declaration)) {
   //   throw new Error();
   // }
-
   const envValue = process.env[variable];
   const result = envValue || defaultValue;
 
@@ -93,6 +90,6 @@ const get = (variable) => {
 };
 
 module.exports = {
-  validate,
+  config,
   getEnv: get,
 };
