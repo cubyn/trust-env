@@ -4,14 +4,7 @@ const errors = require('./errors');
 // TODO Give a type make it required?
 //   No (e.g: type null or undefined)
 // TODO transform()
-// TODO variable must be unique in contract
 // TODO Required is not compatible several types (e.g: null or undfined)
-
-// Type is required
-//
-// Value is not found:
-//   if type === undefined => OK
-//   else => KO
 
 let contract = [];
 
@@ -34,7 +27,7 @@ const findByVariable = (variable) => {
 const assertDeclarationValid = (declaration) => {
   const defaultRightType = validateDefaultType(declaration);
 
-  // Default is not the same type as declared type
+  // "default" is not the same type as the "type"
   if (declaration.defaultValue && !defaultRightType) {
     throw new errors.DeclarationDefaultNotRightTypeError(declaration.default, declaration.type);
   }
@@ -68,12 +61,12 @@ const config = (contractParam) => {
   }
 };
 
-const get = (variable) => {
+const getEnv = (variable) => {
   if (!contract || !contract.length) {
     throw new errors.ContractNotFoundError();
   }
 
-  const { defaultValue } = findByVariable(variable);
+  const { defaultValue, transform } = findByVariable(variable);
 
   // TODO validate by type or validate function if exists
   // if (!validateValueType(declaration)) {
@@ -83,6 +76,10 @@ const get = (variable) => {
   const result = envValue || defaultValue;
 
   if (result) {
+    if (transform) {
+      return transform(result);
+    }
+
     return result;
   }
 
@@ -91,5 +88,5 @@ const get = (variable) => {
 
 module.exports = {
   config,
-  getEnv: get,
+  getEnv,
 };
