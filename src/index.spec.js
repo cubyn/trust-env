@@ -72,6 +72,21 @@ describe('src/index.js', () => {
       });
     });
 
+    describe('when the contract does not contain variable', () => {
+      beforeEach(() => {
+        contract = [{
+          variable: 'DB_HOST',
+          type: 'string',
+        }];
+        env.validate(contract);
+      });
+
+      it('throws with CarotteEnvContractNotFoundEntry', () => {
+        expect(() => env.getEnv('DB_PORT'))
+          .toThrow(errors.CarotteEnvContractNotFoundEntry);
+      });
+    });
+
     describe('when the process.env value is found', () => {
       beforeEach(() => {
         env.validate([{

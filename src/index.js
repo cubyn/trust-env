@@ -25,7 +25,7 @@ const findByVariable = (variable) => {
   if (declarations.length > 1) {
     throw new errors.CarotteEnvContractDuplicateEntries(contract, declarations);
   } else if (declarations.length === 0) {
-    throw new Error();
+    throw new errors.CarotteEnvContractNotFoundEntry(contract, variable);
   }
 
   return declarations[0];
