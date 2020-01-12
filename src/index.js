@@ -70,7 +70,7 @@ const config = (contractParam) => {
 
 const get = (variable) => {
   if (!contract || !contract.length) {
-    throw new Error();
+    throw new errors.ContractNotFound();
   }
 
   const { defaultValue } = findByVariable(variable);

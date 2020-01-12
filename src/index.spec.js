@@ -9,6 +9,20 @@ describe('src/index.js', () => {
   });
 
   describe('#config', () => {
+    describe('when contract is not found', () => {
+      it('throws with CarotteEnvContractNotFound', () => {
+        expect(() => env.config())
+          .toThrow(errors.CarotteEnvContractNotFound);
+      });
+    });
+
+    describe('when contract is empty', () => {
+      it('throws with CarotteEnvContractNotFound', () => {
+        expect(() => env.config())
+          .toThrow(errors.CarotteEnvContractNotFound);
+      });
+    });
+
     describe('type keyword', () => {
       describe('when the type is unknow', () => {
         it.todo('throws');
