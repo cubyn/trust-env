@@ -1,4 +1,4 @@
-module.exports = class DeclarationDefaultNotRightType extends Error {
+module.exports = class DeclarationDefaultNotRightTypeError extends Error {
   constructor(defaultValue, type) {
     super(`Default ${defaultValue} is not the right type (${type})`);
 

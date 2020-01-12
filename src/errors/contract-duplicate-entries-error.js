@@ -1,4 +1,4 @@
-module.exports = class CarotteEnvContractDuplicateEntries extends Error {
+module.exports = class CarotteEnvContractDuplicateEntriesError extends Error {
   constructor(contract, entries) {
     super(`Duplicate entries in contract: ${entries}`);
 

@@ -1,4 +1,4 @@
-module.exports = class CarotteEnvContractNotFound extends Error {
+module.exports = class CarotteEnvContractNotFoundError extends Error {
   constructor() {
     super('Contract not found');
 

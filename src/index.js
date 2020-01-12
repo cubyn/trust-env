@@ -23,9 +23,9 @@ const findByVariable = (variable) => {
   const declarations = contract.filter(declaration => declaration.variable === variable);
 
   if (declarations.length > 1) {
-    throw new errors.ContractDuplicateEntries(contract, declarations);
+    throw new errors.ContractDuplicateEntriesError(contract, declarations);
   } else if (declarations.length === 0) {
-    throw new errors.ContractNotFoundEntry(contract, variable);
+    throw new errors.ContractNotFoundEntryError(contract, variable);
   }
 
   return declarations[0];
@@ -36,7 +36,7 @@ const assertDeclarationValid = (declaration) => {
 
   // Default is not the same type as declared type
   if (declaration.defaultValue && !defaultRightType) {
-    throw new errors.DeclarationDefaultNotRightType(declaration.default, declaration.type);
+    throw new errors.DeclarationDefaultNotRightTypeError(declaration.default, declaration.type);
   }
 };
 
@@ -70,7 +70,7 @@ const config = (contractParam) => {
 
 const get = (variable) => {
   if (!contract || !contract.length) {
-    throw new errors.ContractNotFound();
+    throw new errors.ContractNotFoundError();
   }
 
   const { defaultValue } = findByVariable(variable);

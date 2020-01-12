@@ -10,16 +10,16 @@ describe('src/index.js', () => {
 
   describe('#config', () => {
     describe('when contract is not found', () => {
-      it('throws with CarotteEnvContractNotFound', () => {
+      it('throws with CarotteEnvContractNotFoundError', () => {
         expect(() => env.config())
-          .toThrow(errors.CarotteEnvContractNotFound);
+          .toThrow(errors.CarotteEnvContractNotFoundError);
       });
     });
 
     describe('when contract is empty', () => {
-      it('throws with CarotteEnvContractNotFound', () => {
+      it('throws with CarotteEnvContractNotFoundError', () => {
         expect(() => env.config())
-          .toThrow(errors.CarotteEnvContractNotFound);
+          .toThrow(errors.CarotteEnvContractNotFoundError);
       });
     });
 
@@ -80,9 +80,9 @@ describe('src/index.js', () => {
         env.config(contract);
       });
 
-      it('throws with CarotteEnvContractDuplicateEntries', () => {
+      it('throws with CarotteEnvContractDuplicateEntriesError', () => {
         expect(() => env.getEnv('DB_HOST'))
-          .toThrow(errors.ContractDuplicateEntries);
+          .toThrow(errors.ContractDuplicateEntriesError);
       });
     });
 
@@ -95,9 +95,9 @@ describe('src/index.js', () => {
         env.config(contract);
       });
 
-      it('throws with CarotteEnvContractNotFoundEntry', () => {
+      it('throws with CarotteEnvContractNotFoundEntryError', () => {
         expect(() => env.getEnv('DB_PORT'))
-          .toThrow(errors.ContractNotFoundEntry);
+          .toThrow(errors.ContractNotFoundEntryError);
       });
     });
 
