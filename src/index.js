@@ -15,7 +15,7 @@ const errors = require('./errors');
 
 let contract = [];
 
-const validateDefaultType = declaration => isJs[declaration.type](declaration.default);
+const validateDefaultType = ({ type, defaultValue }) => isJs[type](defaultValue);
 
 const validateValueType = ({ type, variable }) => isJs[type](process.env[variable]);
 
@@ -23,9 +23,9 @@ const findByVariable = (variable) => {
   const declarations = contract.filter(declaration => declaration.variable === variable);
 
   if (declarations.length > 1) {
-    throw new errors.CarotteEnvContractDuplicateEntries(contract, declarations);
+    throw new errors.ContractDuplicateEntries(contract, declarations);
   } else if (declarations.length === 0) {
-    throw new errors.CarotteEnvContractNotFoundEntry(contract, variable);
+    throw new errors.ContractNotFoundEntry(contract, variable);
   }
 
   return declarations[0];
@@ -35,8 +35,8 @@ const assertDeclarationValid = (declaration) => {
   const defaultRightType = validateDefaultType(declaration);
 
   // Default is not the same type as declared type
-  if (declaration.default && !defaultRightType) {
-    throw new Error();
+  if (declaration.defaultValue && !defaultRightType) {
+    throw new errors.DeclarationDefaultNotRightType(declaration.default, declaration.type);
   }
 };
 
@@ -58,6 +58,16 @@ const validate = (contractParam) => {
   if (!allValid) {
     throw new Error();
   }
+
+  // "default" keyword is annoying to works with
+  // Internally renames in "defaultValue"
+  contract.map((declaration) => {
+    const decl = declaration;
+    const defaultValue = decl.default;
+    delete decl.default;
+
+    return { ...decl, defaultValue };
+  });
 };
 
 const get = (variable) => {
@@ -65,15 +75,15 @@ const get = (variable) => {
     throw new Error();
   }
 
-  const declaration = findByVariable(variable);
+  const { defaultValue } = findByVariable(variable);
 
   // TODO validate by type or validate function if exists
   // if (!validateValueType(declaration)) {
   //   throw new Error();
   // }
 
-  const envValue = process.env[declaration.variable];
-  const result = envValue || declaration.default;
+  const envValue = process.env[variable];
+  const result = envValue || defaultValue;
 
   if (result) {
     return result;

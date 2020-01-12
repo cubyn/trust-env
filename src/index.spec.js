@@ -23,7 +23,7 @@ describe('src/index.js', () => {
       describe('when the default is given', () => {
         describe('when the default is not the right type', () => {
           it('throws', () => {
-            const contract = [{
+            contract = [{
               variable: 'DB_HOST',
               type: 'string',
               default: 1,
@@ -68,7 +68,7 @@ describe('src/index.js', () => {
 
       it('throws with CarotteEnvContractDuplicateEntries', () => {
         expect(() => env.getEnv('DB_HOST'))
-          .toThrow(errors.CarotteEnvContractDuplicateEntries);
+          .toThrow(errors.ContractDuplicateEntries);
       });
     });
 
@@ -83,7 +83,7 @@ describe('src/index.js', () => {
 
       it('throws with CarotteEnvContractNotFoundEntry', () => {
         expect(() => env.getEnv('DB_PORT'))
-          .toThrow(errors.CarotteEnvContractNotFoundEntry);
+          .toThrow(errors.ContractNotFoundEntry);
       });
     });
 

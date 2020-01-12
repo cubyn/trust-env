@@ -1,7 +1,9 @@
-const CarotteEnvContractDuplicateEntries = require('./contract-duplicate-entries');
-const CarotteEnvContractNotFoundEntry = require('./contract-not-found-entry');
+const ContractDuplicateEntries = require('./contract-duplicate-entries');
+const ContractNotFoundEntry = require('./contract-not-found-entry');
+const DeclarationDefaultNotRightType = require('./declaration-default-not-right-type');
 
 module.exports = {
-  CarotteEnvContractDuplicateEntries,
-  CarotteEnvContractNotFoundEntry,
+  ContractDuplicateEntries,
+  ContractNotFoundEntry,
+  DeclarationDefaultNotRightType,
 };
