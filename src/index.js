@@ -1,9 +1,10 @@
 const { ResultNotFoundError } = require('./errors');
 const {
-  assertNoDuplicatesEntries,
-  // assertDeclarationValid,
-  assertEntriesValidation,
   assertContractExists,
+  assertEntriesValidation,
+  assertNoDuplicatesEntries,
+} = require('./validations');
+const {
   findDeclaration,
   sanitizeDeclaration,
 } = require('./utils');
@@ -13,9 +14,11 @@ const {
 // TODO multi type
 // TODO Give a type make it required? No (e.g: type null or undefined)
 // TODO transform()
+// TODO validate process.env.key is the right type
 // TODO Required is not compatible several types (e.g: null or undfined)
 // TODO get(['A', 'B'])
 // TODO validate by type or validate function if exists
+// TODO env.push({ key: `DB_PASSWORD` })
 
 let contract = [];
 
@@ -29,8 +32,6 @@ const config = (contractParam) => {
 };
 
 const get = (key) => {
-  assertContractExists(contract);
-
   const { defaultValue, transform } = findDeclaration(contract, key);
 
   const envValue = process.env[key];
