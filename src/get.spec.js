@@ -10,11 +10,11 @@ describe('#get', () => {
     it('throws with DuplicateEntriesError', () => {
       env.config([
         {
-          variable: 'DB_HOST',
+          key: 'DB_HOST',
           type: 'string',
         },
         {
-          variable: 'DB_HOST',
+          key: 'DB_HOST',
           type: 'char',
         },
       ]);
@@ -27,7 +27,7 @@ describe('#get', () => {
   describe('when the contract does not contain requested variable', () => {
     it('throws with NotFoundEntryError', () => {
       env.config([{
-        variable: 'DB_HOST',
+        key: 'DB_HOST',
         type: 'string',
       }]);
 
@@ -40,7 +40,7 @@ describe('#get', () => {
     describe('when there is default', () => {
       it('returns process.env value', () => {
         env.config([{
-          variable: 'DB_HOST',
+          key: 'DB_HOST',
           type: 'string',
           default: 'mysql',
         }]);
@@ -52,7 +52,7 @@ describe('#get', () => {
     describe('when there is no default', () => {
       it('returns process.env value', () => {
         env.config([{
-          variable: 'DB_HOST',
+          key: 'DB_HOST',
           type: 'string',
         }]);
 
@@ -63,7 +63,7 @@ describe('#get', () => {
     describe('when there is transform function', () => {
       it('returns transform result', () => {
         env.config([{
-          variable: 'DB_HOST',
+          key: 'DB_HOST',
           type: 'string',
           transform: value => value.toUpperCase(),
         }]);
@@ -77,7 +77,7 @@ describe('#get', () => {
     describe('when there is default', () => {
       it('returns the default', () => {
         env.config([{
-          variable: 'DB_USER',
+          key: 'DB_USER',
           type: 'string',
           default: 'root',
         }]);
@@ -89,7 +89,7 @@ describe('#get', () => {
     describe('when there is no default', () => {
       it('throws with NotFoundResultError', () => {
         env.config([{
-          variable: 'DB_USER',
+          key: 'DB_USER',
           type: 'string',
         }]);
 

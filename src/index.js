@@ -41,12 +41,12 @@ const config = (contractParam) => {
   }
 };
 
-const get = (variable) => {
+const get = (key) => {
   assertContractExists(contract);
 
-  const { defaultValue, transform } = findDeclaration(contract, variable);
+  const { defaultValue, transform } = findDeclaration(contract, key);
 
-  const envValue = process.env[variable];
+  const envValue = process.env[key];
   const result = envValue || defaultValue;
 
   if (result) {
@@ -57,7 +57,7 @@ const get = (variable) => {
     return result;
   }
 
-  throw new ResultNotFoundError(variable);
+  throw new ResultNotFoundError(key);
 };
 
 module.exports = {

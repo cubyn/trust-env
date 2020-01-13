@@ -1,9 +1,9 @@
 module.exports = class ResultNotFoundError extends Error {
-  constructor(variable) {
-    super(`process.env.${variable} not found and no default given`);
+  constructor(key) {
+    super(`process.env.${key} not found and no default given`);
 
     this.name = this.constructor.name;
-    this.variable = variable;
+    this.key = key;
 
     Error.captureStackTrace(this, this.constructor);
   }

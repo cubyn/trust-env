@@ -8,16 +8,16 @@ const {
 
 const validateDefaultType = ({ type, defaultValue }) => isJs[type](defaultValue);
 
-const validateValueType = ({ type, variable }) => isJs[type](process.env[variable]);
+const validateValueType = ({ type, key }) => isJs[type](process.env[key]);
 
-const findDeclaration = (contract, variable) => {
-  const declarations = contract.filter(declaration => declaration.variable === variable);
+const findDeclaration = (contract, key) => {
+  const declarations = contract.filter(declaration => declaration.key === key);
 
   // Should not occurs (already validated in #config)
   if (declarations.length > 1) {
-    throw new DuplicateEntriesError(contract, [variable]);
+    throw new DuplicateEntriesError(contract, [key]);
   } else if (declarations.length === 0) {
-    throw new EntryNotFoundError(contract, variable);
+    throw new EntryNotFoundError(contract, key);
   }
 
   return declarations[0];
@@ -31,7 +31,7 @@ const assertContractExists = (contract) => {
 
 const assertNoDuplicatesEntries = (contract) => {
   const duplicates = contract
-    .map(({ variable }) => variable)
+    .map(({ key }) => key)
     .reduce((acc, element, i, arr) => {
       if (arr.indexOf(element) !== i && acc.includes(element)) {
         acc.push(element);
@@ -56,7 +56,7 @@ const assertDeclarationValid = (declaration) => {
 // "default" keyword is annoying to works with
 // Internally renames in "defaultValue"
 const sanitizeDeclaration = declaration => ({
-  variable: declaration.variable,
+  key: declaration.key,
   type: declaration.type,
   validator: declaration.validator,
   transform: declaration.transform,

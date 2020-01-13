@@ -17,11 +17,11 @@ $ yarn add @devcubyn/carotte-env-validation
 const env = require('@devcubyn/env-validation');
 const envContract = [
   {
-    variable: 'DB_HOST',
+    key: 'DB_HOST',
     type: 'string',
   },
   {
-    variable: 'DB_PORT',
+    key: 'DB_PORT',
     type: 'number',
     default: 3306,
   },
