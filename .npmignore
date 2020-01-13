@@ -1,4 +1,6 @@
+.circleci/
 .DS_Store
+.editorconfig
 .eslintrc.js
 .githooks
 .github

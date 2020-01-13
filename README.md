@@ -1,6 +1,7 @@
 # carotte-env-validation
 
-Detect invalid environment variable (process.env)
+Makes the usage of process.env variables more secure by validating them againt a contract.
+Fails fast at process runtime if contract requirements are not met.
 
 ## Installation
 
@@ -13,7 +14,30 @@ $ yarn add @devcubyn/carotte-env-validation
 ```js
 // src/index.js
 
-require('@devcubyn/env-validation')(require('dotenv').config());
+const env = require('@devcubyn/env-validation');
+const envContract = [
+  {
+    variable: 'DB_HOST',
+    type: 'string',
+  },
+  {
+    variable: 'DB_PORT',
+    type: 'number',
+    default: 3306,
+  },
+];
+env.config(envContract);
+
+// ...
+```
+
+```js
+// src/anywhere.js
+
+const env = require('@devcubyn/env-validation');
+
+const { DB_HOST, DB_PORT } = env.get(['DB_HOST', 'DB_PORT']);
+
 // ...
 ```
 
