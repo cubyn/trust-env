@@ -1,7 +1,8 @@
 const { ResultNotFoundError } = require('./errors');
 const {
   assertNoDuplicatesEntries,
-  assertDeclarationValid,
+  // assertDeclarationValid,
+  assertEntriesValidation,
   assertContractExists,
   findDeclaration,
   sanitizeDeclaration,
@@ -20,25 +21,11 @@ let contract = [];
 
 const config = (contractParam) => {
   assertContractExists(contractParam);
-  assertNoDuplicatesEntries(contractParam);
 
   contract = contractParam.map(sanitizeDeclaration);
 
-  const declarationsValidations = contract.map((declaration) => {
-    assertDeclarationValid(declaration);
-
-    if (declaration.validator) {
-      return declaration.validator(declaration);
-    }
-
-    return true;
-  });
-
-  const allValid = declarationsValidations.every(validation => validation === true);
-
-  if (!allValid) {
-    throw new Error();
-  }
+  assertNoDuplicatesEntries(contract);
+  assertEntriesValidation(contract);
 };
 
 const get = (key) => {

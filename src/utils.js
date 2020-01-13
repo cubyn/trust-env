@@ -6,8 +6,6 @@ const {
   EntryNotFoundError,
 } = require('./errors');
 
-const validateDefaultType = ({ type, defaultValue }) => isJs[type](defaultValue);
-
 const validateValueType = ({ type, key }) => isJs[type](process.env[key]);
 
 const findDeclaration = (contract, key) => {
@@ -45,11 +43,29 @@ const assertNoDuplicatesEntries = (contract) => {
   }
 };
 
-const assertDeclarationValid = (declaration) => {
-  const defaultRightType = validateDefaultType(declaration);
+const assertEntriesValidation = (contract) => {
+  const declarationsValidations = contract.map((declaration) => {
+    const defaultRightType = isJs[declaration.type](declaration.defaultValue);
 
-  if (declaration.defaultValue && !defaultRightType) {
-    throw new DefaultInvalidTypeError(declaration.defaultValue, declaration.type);
+    if (declaration.defaultValue && !defaultRightType) {
+      throw new DefaultInvalidTypeError(declaration.defaultValue, declaration.type);
+    }
+
+    if (declaration.validator) {
+      const isValid = declaration.validator(declaration);
+
+      if (!isValid) {
+        throw new Error();
+      }
+    }
+
+    return true;
+  });
+
+  const allValid = declarationsValidations.every(validation => validation === true);
+
+  if (!allValid) {
+    throw new Error();
   }
 };
 
@@ -64,11 +80,11 @@ const sanitizeDeclaration = declaration => ({
 });
 
 module.exports = {
-  validateDefaultType,
-  validateValueType,
-  findDeclaration,
-  assertNoDuplicatesEntries,
-  assertDeclarationValid,
-  sanitizeDeclaration,
   assertContractExists,
+  // assertDeclarationValid,
+  assertEntriesValidation,
+  assertNoDuplicatesEntries,
+  findDeclaration,
+  sanitizeDeclaration,
+  validateValueType,
 };
