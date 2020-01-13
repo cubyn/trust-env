@@ -7,6 +7,9 @@ const {
   ResultNotFoundError,
 } = require('./errors');
 
+// TODO transform as function
+// TODO default as function
+// TODO multi type
 // TODO Give a type make it required?
 //   No (e.g: type null or undefined)
 // TODO transform()
@@ -62,10 +65,10 @@ const config = (contractParam) => {
 
   // "default" keyword is annoying to works with
   // Internally renames in "defaultValue"
-  contract = contractParam.map(({ variable, type, default: defaultValue, validate, transform }) => ({
+  contract = contractParam.map(({ variable, type, default: defaultValue, validator, transform }) => ({
     variable,
     type,
-    validate,
+    validator,
     transform,
     defaultValue,
   }));
@@ -75,8 +78,8 @@ const config = (contractParam) => {
   const declarationsValidations = contract.map((declaration) => {
     assertDeclarationValid(declaration);
 
-    if (declaration.validate) {
-      return declaration.validate(declaration);
+    if (declaration.validator) {
+      return declaration.validator(declaration);
     }
 
     return true;
