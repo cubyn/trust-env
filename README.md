@@ -1,6 +1,7 @@
 # carotte-env-validation
 
-Make process.env usage more safe
+Makes the usage of process.env variables more secure by validating them againt a contract.
+Fails fast at process runtime if contract requirements are not met.
 
 ## Installation
 
@@ -22,9 +23,10 @@ const envContract = [
   {
     variable: 'DB_PORT',
     type: 'number',
+    default: 3306,
   },
 ];
-env.validate(envContract);
+env.config(envContract);
 
 // ...
 ```
@@ -32,9 +34,9 @@ env.validate(envContract);
 ```js
 // src/anywhere.js
 
-const { getEnv } = require('@devcubyn/env-validation');
+const env = require('@devcubyn/env-validation');
 
-const { DB_HOST, DB_PORT } = getEnv(['DB_HOST', 'DB_PORT']);
+const { DB_HOST, DB_PORT } = env.get(['DB_HOST', 'DB_PORT']);
 
 // ...
 ```

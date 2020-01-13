@@ -94,6 +94,11 @@ const get = (variable) => {
     throw new ContractNotFoundError();
   }
 
+  // TODO
+  // if (Array.isArray(variable)) {
+
+  // }
+
   const { defaultValue, transform } = findByVariable(variable);
 
   // TODO validate by type or validate function if exists
