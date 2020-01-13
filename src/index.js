@@ -1,7 +1,8 @@
-const { ContractNotFoundError, ResultNotFoundError } = require('./errors');
+const { ResultNotFoundError } = require('./errors');
 const {
   assertNoDuplicatesEntries,
   assertDeclarationValid,
+  assertContractExists,
   findDeclaration,
   sanitizeDeclaration,
 } = require('./utils');
@@ -18,13 +19,10 @@ const {
 let contract = [];
 
 const config = (contractParam) => {
-  if (!contractParam || !contractParam.length) {
-    throw new ContractNotFoundError();
-  }
+  assertContractExists(contractParam);
+  assertNoDuplicatesEntries(contractParam);
 
   contract = contractParam.map(sanitizeDeclaration);
-
-  assertNoDuplicatesEntries(contract);
 
   const declarationsValidations = contract.map((declaration) => {
     assertDeclarationValid(declaration);
@@ -44,9 +42,7 @@ const config = (contractParam) => {
 };
 
 const get = (variable) => {
-  if (!contract || !contract.length) {
-    throw new ContractNotFoundError();
-  }
+  assertContractExists(contract);
 
   const { defaultValue, transform } = findDeclaration(contract, variable);
 

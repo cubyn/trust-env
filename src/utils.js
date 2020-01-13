@@ -2,6 +2,7 @@ const isJs = require('is_js');
 const {
   DefaultInvalidTypeError,
   DuplicateEntriesError,
+  ContractNotFoundError,
   EntryNotFoundError,
 } = require('./errors');
 
@@ -20,6 +21,12 @@ const findDeclaration = (contract, variable) => {
   }
 
   return declarations[0];
+};
+
+const assertContractExists = (contract) => {
+  if (!contract || !contract.length) {
+    throw new ContractNotFoundError();
+  }
 };
 
 const assertNoDuplicatesEntries = (contract) => {
@@ -63,4 +70,5 @@ module.exports = {
   assertNoDuplicatesEntries,
   assertDeclarationValid,
   sanitizeDeclaration,
+  assertContractExists,
 };
