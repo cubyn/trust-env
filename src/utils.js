@@ -23,7 +23,19 @@ const sanitizeDeclaration = declaration => ({
   transform: declaration.transform,
 });
 
+const transformComposedType = (type, value) => {
+  switch (type) {
+    case 'integersArray':
+      return value
+        .split(',')
+        .map(item => parseInt(item, 10));
+    default:
+      throw new Error();
+  }
+};
+
 module.exports = {
   findDeclaration,
   sanitizeDeclaration,
+  transformComposedType,
 };

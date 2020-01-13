@@ -55,3 +55,12 @@ async function handler({ data }) {
   // ...
 }
 ```
+
+## Documentation
+
+### Type checks
+
+The `type` can be:
+
+* [those given by is.js](https://github.com/arasatasaygin/is.js#type-checks)
+* `integersArray`

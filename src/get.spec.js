@@ -4,98 +4,112 @@ const env = require('.');
 describe('#get', () => {
   beforeAll(() => {
     process.env.DB_HOST = 'localhost';
+    process.env.DB_PORTS = '3306,3309';
   });
 
-  describe('when the contract contains duplicates variables', () => {
-    it('throws with DuplicateEntriesError', () => {
-      env.config([
-        {
-          key: 'DB_HOST',
-          type: 'string',
-        },
-        {
-          key: 'DB_HOST',
-          type: 'char',
-        },
-      ]);
-
-      expect(() => env.get('DB_HOST'))
-        .toThrow(errors.DuplicateEntriesError);
-    });
-  });
-
-  describe('when the contract does not contain requested variable', () => {
-    it('throws with NotFoundEntryError', () => {
+  describe('when the process.env value is found', () => {
+    it('returns process.env value', () => {
       env.config([{
         key: 'DB_HOST',
         type: 'string',
       }]);
 
-      expect(() => env.get('DB_PORT'))
-        .toThrow(errors.NotFoundEntryError);
-    });
-  });
-
-  describe('when the process.env value is found', () => {
-    describe('when there is default', () => {
-      it('returns process.env value', () => {
-        env.config([{
-          key: 'DB_HOST',
-          type: 'string',
-          default: 'mysql',
-        }]);
-
-        expect(env.get('DB_HOST')).toBe(process.env.DB_HOST);
-      });
-    });
-
-    describe('when there is no default', () => {
-      it('returns process.env value', () => {
-        env.config([{
-          key: 'DB_HOST',
-          type: 'string',
-        }]);
-
-        expect(env.get('DB_HOST')).toBe(process.env.DB_HOST);
-      });
-    });
-
-    describe('when there is transform function', () => {
-      it('returns transform result', () => {
-        env.config([{
-          key: 'DB_HOST',
-          type: 'string',
-          transform: value => value.toUpperCase(),
-        }]);
-
-        expect(env.get('DB_HOST')).toBe('LOCALHOST');
-      });
+      expect(env.get('DB_HOST')).toBe(process.env.DB_HOST);
     });
   });
 
   describe('when the process.env value is not found', () => {
-    describe('when there is default', () => {
-      it('returns the default', () => {
-        env.config([{
-          key: 'DB_USER',
-          type: 'string',
-          default: 'root',
-        }]);
+    it('throws with NotFoundResultError', () => {
+      env.config([{
+        key: 'DB_USER',
+        type: 'string',
+      }]);
 
-        expect(env.get('DB_USER')).toBe('root');
+      expect(() => env.get('DB_USER'))
+        .toThrow(errors.NotFoundResultError);
+    });
+  });
+
+  describe('validations', () => {
+    describe('when the contract contains duplicates variables', () => {
+      it('throws with DuplicateEntriesError', () => {
+        env.config([
+          {
+            key: 'DB_HOST',
+            type: 'string',
+          },
+          {
+            key: 'DB_HOST',
+            type: 'char',
+          },
+        ]);
+
+        expect(() => env.get('DB_HOST'))
+          .toThrow(errors.DuplicateEntriesError);
       });
     });
 
-    describe('when there is no default', () => {
-      it('throws with NotFoundResultError', () => {
+    describe('when the contract does not contain requested variable', () => {
+      it('throws with NotFoundEntryError', () => {
         env.config([{
-          key: 'DB_USER',
+          key: 'DB_HOST',
           type: 'string',
         }]);
 
-        expect(() => env.get('DB_USER'))
-          .toThrow(errors.NotFoundResultError);
+        expect(() => env.get('DB_PORT'))
+          .toThrow(errors.NotFoundEntryError);
       });
+    });
+  });
+
+  describe('default keyword', () => {
+    describe('when there is default', () => {
+      describe('when the process.env value is found', () => {
+        it('returns process.env value', () => {
+          env.config([{
+            key: 'DB_HOST',
+            type: 'string',
+            default: 'root',
+          }]);
+
+          expect(env.get('DB_HOST')).toBe(process.env.DB_HOST);
+        });
+      });
+
+      describe('when the process.env value is not found', () => {
+        it('returns the default', () => {
+          env.config([{
+            key: 'DB_USER',
+            type: 'string',
+            default: 'root',
+          }]);
+
+          expect(env.get('DB_USER')).toBe('root');
+        });
+      });
+    });
+  });
+
+  describe('transform function', () => {
+    it('returns transform result', () => {
+      env.config([{
+        key: 'DB_HOST',
+        type: 'string',
+        transform: value => value.toUpperCase(),
+      }]);
+
+      expect(env.get('DB_HOST')).toBe('LOCALHOST');
+    });
+  });
+
+  describe('composed type behaviors', () => {
+    it('returns transformed process.env value ', () => {
+      env.config([{
+        key: 'DB_PORTS',
+        type: 'integersArray',
+      }]);
+
+      expect(env.get('DB_PORTS')).toEqual([3306, 3309]);
     });
   });
 });

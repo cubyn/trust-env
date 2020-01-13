@@ -4,6 +4,7 @@ const {
   DefaultInvalidTypeError,
   DuplicateEntriesError,
 } = require('./errors');
+require('./types');
 
 const assertContractExists = (contract) => {
   if (!contract || !contract.length) {

@@ -1,17 +1,17 @@
 const { ResultNotFoundError } = require('./errors');
 const {
+  findDeclaration,
+  sanitizeDeclaration,
+  transformComposedType,
+} = require('./utils');
+const {
   assertContractExists,
   assertEntriesValidation,
   assertNoDuplicatesEntries,
 } = require('./validations');
-const {
-  findDeclaration,
-  sanitizeDeclaration,
-} = require('./utils');
 
-// TODO transform as function
+// TODO add types stringsArray, numbersArray
 // TODO default as function
-// TODO multi type
 // TODO Give a type make it required? No (e.g: type null or undefined)
 // TODO transform()
 // TODO validate process.env.key is the right type
@@ -21,6 +21,9 @@ const {
 // TODO env.push({ key: `DB_PASSWORD` })
 
 let contract = [];
+const COMPOSED_TYPES = [
+  'integersArray',
+];
 
 const config = (contractParam) => {
   assertContractExists(contractParam);
@@ -32,12 +35,14 @@ const config = (contractParam) => {
 };
 
 const get = (key) => {
-  const { defaultValue, transform } = findDeclaration(contract, key);
-
-  const envValue = process.env[key];
-  const result = envValue || defaultValue;
+  const { type, defaultValue, transform } = findDeclaration(contract, key);
+  let result = process.env[key] || defaultValue;
 
   if (result) {
+    if (COMPOSED_TYPES.includes(type)) {
+      result = transformComposedType(type, result);
+    }
+
     if (transform) {
       return transform(result);
     }
