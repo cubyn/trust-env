@@ -18,6 +18,26 @@ describe('#get', () => {
     });
   });
 
+  describe('when the process.env value are found', () => {
+    it('returns process.env values', () => {
+      env.config([
+        {
+          key: 'DB_HOST',
+          type: 'string',
+        },
+        {
+          key: 'DB_PORTS',
+          type: 'integersArray',
+        },
+      ]);
+
+      expect(env.get(['DB_HOST', 'DB_PORTS'])).toEqual({
+        DB_HOST: 'localhost',
+        DB_PORTS: [3306, 3309],
+      });
+    });
+  });
+
   describe('when the process.env value is not found', () => {
     it('throws with NotFoundResultError', () => {
       env.config([{
