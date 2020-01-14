@@ -58,6 +58,10 @@ async function handler({ data }) {
 
 ## Documentation
 
+### Features
+
+* Handle the case where process.env variables are updated after validations
+
 ### Type checks
 
 The `type` can be:

@@ -21,6 +21,8 @@ describe('src/index.js', () => {
       },
     ]);
 
+    process.env.API_TOKEN = null;
+
     expect(env.get('API_URL')).toBe('https://endpoint-a.pi/v3');
     expect(env.get('API_TOKEN')).toBe(process.env.API_TOKEN);
   });

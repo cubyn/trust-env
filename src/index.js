@@ -10,7 +10,6 @@ const {
   assertNoDuplicatesEntries,
 } = require('./validations');
 
-// TODO get works with "cached" process.env version? (cannot be accidentally updated)
 // TODO add types stringsArray, numbersArray
 // TODO default as function
 // TODO Give a type make it required? No (e.g: type null or undefined)
@@ -21,6 +20,7 @@ const {
 // TODO env.push({ key: `DB_PASSWORD` })
 
 let contract = [];
+let processEnv = {};
 const COMPOSED_TYPES = [
   'integersArray',
 ];
@@ -32,26 +32,29 @@ const config = (contractParam) => {
 
   assertNoDuplicatesEntries(contract);
   assertEntriesValidation(contract);
+
+  // Validated process.env variables to only works with safe values
+  processEnv = process.env;
 };
 
 const get = (keys) => {
   const processKey = (key) => {
     const { type, defaultValue, transform } = findDeclaration(contract, key);
-    let result = process.env[key] || defaultValue;
+    let result = processEnv[key] || defaultValue;
 
-    if (result) {
-      if (COMPOSED_TYPES.includes(type)) {
-        result = transformComposedType(type, result);
-      }
-
-      if (transform) {
-        return transform(result);
-      }
-
-      return result;
+    if (!result) {
+      throw new ResultNotFoundError(key);
     }
 
-    throw new ResultNotFoundError(key);
+    if (COMPOSED_TYPES.includes(type)) {
+      result = transformComposedType(type, result);
+    }
+
+    if (transform) {
+      return transform(result);
+    }
+
+    return result;
   };
 
   if (Array.isArray(keys)) {
