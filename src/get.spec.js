@@ -7,6 +7,40 @@ describe('#get', () => {
     process.env.DB_PORTS = '3306,3309';
   });
 
+  describe('validations', () => {
+    beforeEach(() => {
+      // env.processEnv is a global variable:
+      // it produces side effect from one test to another
+      jest.resetModules();
+    });
+
+    describe('when the config function was called', () => {
+      it('does not throw', () => {
+        env.config([{
+          key: 'DB_HOST',
+          type: 'string',
+        }]);
+
+        expect(() => env.get('DB_HOST'))
+          .not.toThrow();
+      });
+    });
+
+    describe('when the config function was not called', () => {
+      let env2;
+
+      beforeEach(() => {
+        // eslint-disable-next-line global-require
+        env2 = require('.');
+      });
+
+      it('throws with ProcessEnvEmptyError', () => {
+        expect(() => env2.get('DB_HOST'))
+          .toThrow(errors.ProcessEnvEmptyError);
+      });
+    });
+  });
+
   describe('when the process.env value is found', () => {
     it('returns process.env value', () => {
       env.config([{

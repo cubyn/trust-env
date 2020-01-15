@@ -13,6 +13,13 @@ const findDeclaration = (contract, key) => {
   return declarations[0];
 };
 
+// Keep process.env variables to only works with safe values
+const getDeclaredEnvVariables = contract => contract.reduce((acc, { key }) => {
+  acc[key] = process.env[key];
+
+  return acc;
+}, {});
+
 // "default" keyword is annoying to works with
 // Internally renames in "defaultValue"
 const sanitizeDeclaration = declaration => ({
@@ -36,6 +43,7 @@ const transformComposedType = (type, value) => {
 
 module.exports = {
   findDeclaration,
+  getDeclaredEnvVariables,
   sanitizeDeclaration,
   transformComposedType,
 };

@@ -3,6 +3,7 @@ const {
   ContractNotFoundError,
   DefaultInvalidTypeError,
   DuplicateEntriesError,
+  ProcessEnvEmptyError,
 } = require('./errors');
 require('./types');
 
@@ -54,8 +55,15 @@ const assertEntriesValidation = (contract) => {
   }
 };
 
+const assertProcessEnvExists = (processEnv) => {
+  if (isJs.empty(processEnv)) {
+    throw new ProcessEnvEmptyError();
+  }
+};
+
 module.exports = {
   assertContractExists,
   assertEntriesValidation,
   assertNoDuplicatesEntries,
+  assertProcessEnvExists,
 };
