@@ -8,6 +8,7 @@ const {
   assertUniqueEntries,
 } = require('./validations');
 
+// TODO Add is.js to validator function
 // TODO Add "variable" to validator function
 // TODO Validate by type or validate function if exists
 // TODO Give a type make it required? No (e.g: type null or undefined)

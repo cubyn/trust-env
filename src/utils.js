@@ -1,5 +1,4 @@
 const {
-  EntryNotUniqueError,
   EntryNotFoundError,
   ResultNotFoundError,
 } = require('./errors');
@@ -7,6 +6,7 @@ const {
 const COMPOSED_TYPES = [
   'stringsArray',
   'integersArray',
+  'numbersArray',
 ];
 
 const findEntry = (contract, key) => {
@@ -53,6 +53,10 @@ const transformComposedType = (type, value) => {
       return value
         .split(',')
         .map(item => parseInt(item, 10));
+    case 'numbersArray':
+      return value
+        .split(',')
+        .map(item => parseFloat(item));
     default:
       throw new Error();
   }
