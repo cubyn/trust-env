@@ -1,12 +1,13 @@
-# trus-env
+# trust-env
 
 Makes the usage of process.env variables more secure by validating them againt a contract.
-Fails fast at process runtime if contract requirements are not met.
+
+Fails fast at runtime if contract requirements are not met.
 
 ## Installation
 
 ```bash
-$ yarn add @devcubyn/trus-env
+$ yarn add trust-env
 ```
 
 ## Usage
@@ -14,9 +15,9 @@ $ yarn add @devcubyn/trus-env
 ```js
 // src/drivers/env.js
 
-const env = require('@devcubyn/env-validation');
+const env = require('trust-env');
 
-// Provides a contract for declaring and validating process.env variables
+// Contract for declaring and validating used variables
 module.exports = env.config([
   {
     key: 'DB_HOST',
@@ -74,6 +75,7 @@ async function handler({ data }) {
 The `type` can be:
 
 * [those given by is.js](https://github.com/arasatasaygin/is.js#type-checks)
+* `stringsArray`
 * `integersArray`
 
 ### Default value
