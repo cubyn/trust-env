@@ -8,11 +8,9 @@ const {
   assertUniqueEntries,
 } = require('./validations');
 
-// TODO add "variable" to validator function
+// TODO Add "variable" to validator function
 // TODO Validate by type or validate function if exists
-// TODO add "value" in param of validator function
 // TODO Give a type make it required? No (e.g: type null or undefined)
-// TODO Add type numbersArray
 // TODO transform()
 // TODO default as function
 // TODO Required is not compatible several types (e.g: null or undefined)

@@ -29,6 +29,7 @@ const assertUniqueEntries = (contract) => {
     throw new EntryNotUniqueError(contract, duplicates);
   }
 };
+
 const assertValidEntries = (contract) => {
   contract.forEach((entry) => {
     const { key, type, validator, defaultValue } = entry;

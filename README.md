@@ -77,6 +77,7 @@ The `type` can be:
 * [those given by is.js](https://github.com/arasatasaygin/is.js#type-checks)
 * `stringsArray`
 * `integersArray`
+* `numbersArray`
 
 ### Default value
 

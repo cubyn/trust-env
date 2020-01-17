@@ -1,7 +1,10 @@
 const isJs = require('is_js');
 
-const { slice } = Array.prototype;
-const COMPOSED_ARRAY_TYPES = ['string', 'integer'];
+const COMPOSED_ARRAY_TYPES = [
+  'string',
+  'integer',
+  'number',
+];
 
 /**
  * Returns a function to validate composed array types (e.g: stringsArray)
@@ -21,10 +24,9 @@ const scalarArrayTypeBuilder = scalarType => (value) => {
 };
 
 const getParams = (args) => {
-  let params = slice.call(args);
-  const { length } = params;
+  let params = Array.prototype.slice.call(args);
 
-  if (length === 1 && isJs.array(params[0])) {
+  if (params.length === 1 && isJs.array(params[0])) {
     [params] = params;
   }
 
