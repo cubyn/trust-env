@@ -21,10 +21,12 @@ const {
 
 const config = ({ contract } = {}) => {
   assertContractExists(contract);
-  assertUniqueEntries(contract);
-  assertValidEntries(contract);
 
   const CONTRACT = contract.map(sanitizeEntry);
+
+  assertUniqueEntries(CONTRACT);
+  assertValidEntries(CONTRACT);
+
   const VARIABLES = extractEnvVariables(CONTRACT);
 
   return {

@@ -9,7 +9,7 @@ const {
 require('./types');
 
 const assertContractExists = (contract) => {
-  if (isJs.empty(contract)) {
+  if (isJs.not.existy(contract) || isJs.empty(contract)) {
     throw new ContractNotFoundError();
   }
 };
@@ -18,7 +18,7 @@ const assertUniqueEntries = (contract) => {
   const duplicates = contract
     .map(({ key }) => key)
     .reduce((acc, element, i, arr) => {
-      if (arr.indexOf(element) !== i && acc.includes(element)) {
+      if (arr.indexOf(element) !== i && !acc.includes(element)) {
         acc.push(element);
       }
 
@@ -39,7 +39,7 @@ const assertValidEntries = (contract) => {
 
     if (defaultValue && isJs.not[type](defaultValue)) {
       // TODO extends EntryNotValidError
-      throw new EntryDefaultTypeNotValidError(defaultValue, type);
+      throw new EntryDefaultTypeNotValidError(key, defaultValue, type);
     }
 
     if (validator) {

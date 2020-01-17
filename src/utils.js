@@ -23,7 +23,7 @@ const findDeclaration = (contract, key) => {
 };
 
 // Internally renames "default" into "defaultValue":
-// ("default" keyword is annoying to works with)
+// ("default" property is annoying to works with)
 const sanitizeEntry = declaration => ({
   key: declaration.key,
   type: declaration.type,
