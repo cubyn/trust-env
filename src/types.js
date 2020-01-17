@@ -34,24 +34,18 @@ const getParams = (args) => {
 // https://github.com/arasatasaygin/is.js/blob/master/is.js#L44
 
 // Helper function which reverses the sense of predicate result
-const not = (func) => {
-  return function notFn() {
-    return !func(...arguments);
-  };
+const not = func => function notFn(args) {
+  return !func(args);
 };
 
 // Helper function which call predicate function per parameter and return true if all pass
-const all = (func) => {
-  return function allFn() {
-    return !getParams(arguments).some(param => !func(param));
-  };
+const all = func => function allFn(args) {
+  return !getParams(args).some(param => !func(param));
 };
 
 // Helper function which call predicate function per parameter and return true if any pass
-const any = (func) => {
-  return function anyFn() {
-    return getParams(arguments).some(func);
-  };
+const any = func => function anyFn(args) {
+  return getParams(args).some(func);
 };
 
 COMPOSED_ARRAY_TYPES.forEach((type) => {

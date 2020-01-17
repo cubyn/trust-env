@@ -1,4 +1,3 @@
-const { ResultNotFoundError } = require('./errors');
 const envLib = require('.');
 
 describe('#get', () => {
