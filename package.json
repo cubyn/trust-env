@@ -24,5 +24,13 @@
     "eslint-plugin-unicorn": "^15.0.0",
     "jest": "^24.0.0",
     "jest-junit": "^10.0.0"
-  }
+  },
+  "keywords": [
+    "env",
+    ".env",
+    "environment",
+    "variables",
+    "config",
+    "settings"
+  ]
 }
