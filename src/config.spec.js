@@ -39,7 +39,7 @@ describe('#config', () => {
     });
   });
 
-  describe('declarations validation', () => {
+  describe('entries validation', () => {
     describe('when key property is not found', () => {
       it('throws with EntryNotValidError', () => {
         const contract = [{ type: 'string' }];
