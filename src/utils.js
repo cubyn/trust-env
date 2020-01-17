@@ -60,26 +60,22 @@ const transformComposedType = (type, value) => {
   }
 };
 
-const processKey = (key, value, { contract }) => {
-  const { type, defaultValue, transform } = findDeclaration(contract, key);
-  let result = value || defaultValue;
-
-  if (!result) {
-    throw new ResultNotFoundError(key);
-  }
-
-  if (COMPOSED_TYPES.includes(type)) {
-    result = transformComposedType(type, result);
-  }
-
-  return transform
-    ? transform(result)
-    : result;
-};
-
 const extractEnvVariables = contract => contract
   .reduce((acc, { key }) => {
-    acc[key] = processKey(key, process.env[key], { contract });
+    const { type, defaultValue, transform } = findDeclaration(contract, key);
+    let result = process.env[key] || defaultValue;
+
+    if (!result) {
+      throw new ResultNotFoundError(key);
+    }
+
+    if (COMPOSED_TYPES.includes(type)) {
+      result = transformComposedType(type, result);
+    }
+
+    acc[key] = transform
+      ? transform(result)
+      : result;
 
     return acc;
   }, {});

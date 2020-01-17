@@ -4,7 +4,6 @@ const {
   EntryDefaultTypeNotValidError,
   EntryNotUniqueError,
   EntryNotValidError,
-  ProcessEnvNotFoundError,
 } = require('./errors');
 require('./types');
 
@@ -59,15 +58,8 @@ const assertValidEntries = (contract) => {
   });
 };
 
-const assertProcessEnvExists = (processEnv) => {
-  if (isJs.empty(processEnv)) {
-    throw new ProcessEnvNotFoundError();
-  }
-};
-
 module.exports = {
   assertContractExists,
   assertValidEntries,
   assertUniqueEntries,
-  assertProcessEnvExists,
 };
