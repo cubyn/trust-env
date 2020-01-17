@@ -1,4 +1,4 @@
-# carotte-env-validation
+# trus-env
 
 Makes the usage of process.env variables more secure by validating them againt a contract.
 Fails fast at process runtime if contract requirements are not met.
@@ -6,7 +6,7 @@ Fails fast at process runtime if contract requirements are not met.
 ## Installation
 
 ```bash
-$ yarn add @devcubyn/carotte-env-validation
+$ yarn add @devcubyn/trus-env
 ```
 
 ## Usage
