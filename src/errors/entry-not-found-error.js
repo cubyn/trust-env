@@ -1,10 +1,10 @@
 module.exports = class EntryNotFoundError extends Error {
-  constructor(contract, variable) {
-    super(`Variable ${variable} not found in contract`);
+  constructor(contract, key) {
+    super(`Entry with key: ${key} not found`);
 
     this.name = this.constructor.name;
     this.contract = contract;
-    this.variable = variable;
+    this.key = key;
 
     Error.captureStackTrace(this, this.constructor);
   }

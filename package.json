@@ -1,15 +1,15 @@
 {
-  "name": "@devcubyn/carotte-env-validation",
-  "version": "0.3.0",
-  "description": "Validate process.env variables",
+  "name": "trust-env",
+  "version": "1.0.0",
+  "description": "Make process.env usage safe",
   "main": "src/index.js",
-  "repository": "git@github.com:cubyn/carotte-env-validation",
-  "license": "ISC",
+  "repository": "git@github.com:cubyn/trust-env",
+  "license": "MIT",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cover": "jest --coverage",
-    "lint": "./node_modules/.bin/eslint src tests"
+    "lint": "./node_modules/.bin/eslint src"
   },
   "dependencies": {
     "ajv": "^6.0.0",
@@ -21,8 +21,8 @@
     "eslint-plugin-cubyn": "^2.0.0",
     "eslint-plugin-import": "^2.0.0",
     "eslint-plugin-jest": "^23.0.0",
-    "eslint-plugin-unicorn": "^14.0.0",
+    "eslint-plugin-unicorn": "^15.0.0",
     "jest": "^24.0.0",
-    "jest-junit": "^9.0.0"
+    "jest-junit": "^10.0.0"
   }
 }

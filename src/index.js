@@ -1,128 +1,51 @@
-const isJs = require('is_js');
 const {
-  ContractNotFoundError,
-  DefaultInvalidTypeError,
-  DuplicateEntriesError,
-  EntryNotFoundError,
-  ResultNotFoundError,
-} = require('./errors');
+  sanitizeEntry,
+  extractEnvVariables,
+} = require('./utils');
+const {
+  assertContractExists,
+  assertValidEntries,
+  assertUniqueEntries,
+} = require('./validations');
 
-// TODO transform as function
-// TODO default as function
-// TODO multi type
-// TODO Give a type make it required?
-//   No (e.g: type null or undefined)
+// TODO add "value" in param of validator function
+// TODO rename package into safe-env
+// TODO Throws if required declarations props are not found
+// TODO Validate by type or validate function if exists
+// TODO Give a type make it required? No (e.g: type null or undefined)
+// TODO Add types stringsArray, numbersArray
 // TODO transform()
-// TODO Required is not compatible several types (e.g: null or undfined)
+// TODO default as function
+// TODO Required is not compatible several types (e.g: null or undefined)
+// TODO env.push({ key: `DB_PASSWORD` }) (dynamically created)
 
-let contract = [];
+const config = ({ contract } = {}) => {
+  assertContractExists(contract);
 
-const validateDefaultType = ({ type, defaultValue }) => isJs[type](defaultValue);
+  const CONTRACT = contract.map(sanitizeEntry);
 
-const validateValueType = ({ type, variable }) => isJs[type](process.env[variable]);
+  assertUniqueEntries(CONTRACT);
+  assertValidEntries(CONTRACT);
 
-const findByVariable = (variable) => {
-  const declarations = contract.filter(declaration => declaration.variable === variable);
+  const VARIABLES = extractEnvVariables(CONTRACT);
 
-  // Should not occurs (validated in #config)
-  if (declarations.length > 1) {
-    throw new DuplicateEntriesError(contract, [variable]);
-  } else if (declarations.length === 0) {
-    throw new EntryNotFoundError(contract, variable);
-  }
-
-  return declarations[0];
+  return {
+    get: get(VARIABLES),
+    ...module.exports,
+    ...VARIABLES,
+  };
 };
 
-const assertNoDuplicatesEntries = (contract) => {
-  const duplicates = contract
-    .map(({ variable }) => variable)
-    .reduce((acc, element, i, arr) => {
-      if (arr.indexOf(element) !== i && acc.includes(element)) {
-        acc.push(element);
-      }
+const get = variables => (keys) => {
+  if (Array.isArray(keys)) {
+    return keys.reduce((acc, key) => {
+      acc[key] = variables[key];
 
       return acc;
-    }, []);
-
-  if (duplicates.length) {
-    throw new DuplicateEntriesError(contract, duplicates);
+    }, {});
   }
+
+  return variables[keys];
 };
 
-const assertDeclarationValid = (declaration) => {
-  const defaultRightType = validateDefaultType(declaration);
-
-  if (declaration.defaultValue && !defaultRightType) {
-    throw new DefaultInvalidTypeError(declaration.defaultValue, declaration.type);
-  }
-};
-
-const config = (contractParam) => {
-  if (!contractParam || !contractParam.length) {
-    throw new ContractNotFoundError();
-  }
-
-  // "default" keyword is annoying to works with
-  // Internally renames in "defaultValue"
-  contract = contractParam.map(({ variable, type, default: defaultValue, validator, transform }) => ({
-    variable,
-    type,
-    validator,
-    transform,
-    defaultValue,
-  }));
-
-  assertNoDuplicatesEntries(contract);
-
-  const declarationsValidations = contract.map((declaration) => {
-    assertDeclarationValid(declaration);
-
-    if (declaration.validator) {
-      return declaration.validator(declaration);
-    }
-
-    return true;
-  });
-
-  const allValid = declarationsValidations.every(validation => validation === true);
-
-  if (!allValid) {
-    throw new Error();
-  }
-};
-
-const get = (variable) => {
-  if (!contract || !contract.length) {
-    throw new ContractNotFoundError();
-  }
-
-  // TODO
-  // if (Array.isArray(variable)) {
-
-  // }
-
-  const { defaultValue, transform } = findByVariable(variable);
-
-  // TODO validate by type or validate function if exists
-  // if (!validateValueType(declaration)) {
-  //   throw new Error();
-  // }
-  const envValue = process.env[variable];
-  const result = envValue || defaultValue;
-
-  if (result) {
-    if (transform) {
-      return transform(result);
-    }
-
-    return result;
-  }
-
-  throw new ResultNotFoundError(variable);
-};
-
-module.exports = {
-  config,
-  get,
-};
+module.exports = { config };
