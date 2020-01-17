@@ -1,6 +1,6 @@
-module.exports = class DuplicateEntriesError extends Error {
+module.exports = class EntryNotUniqueError extends Error {
   constructor(contract, keys) {
-    super(`Duplicate entries found in contract for ${keys}`);
+    super(`Entries with keys: ${keys} not uniques`);
 
     this.name = this.constructor.name;
     this.contract = contract;

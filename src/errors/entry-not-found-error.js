@@ -1,6 +1,6 @@
 module.exports = class EntryNotFoundError extends Error {
   constructor(contract, key) {
-    super(`Key ${key} not found in contract`);
+    super(`Entry with key: ${key} not found`);
 
     this.name = this.constructor.name;
     this.contract = contract;

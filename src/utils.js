@@ -1,11 +1,20 @@
-const { DuplicateEntriesError, EntryNotFoundError } = require('./errors');
+const {
+  EntryNotUniqueError,
+  EntryNotFoundError,
+  ResultNotFoundError,
+} = require('./errors');
+
+const COMPOSED_TYPES = [
+  'stringsArray',
+  'integersArray',
+];
 
 const findDeclaration = (contract, key) => {
   const declarations = contract.filter(declaration => declaration.key === key);
 
   // Should not occurs (already validated in #config)
   if (declarations.length > 1) {
-    throw new DuplicateEntriesError(contract, [key]);
+    throw new EntryNotUniqueError(contract, [key]);
   } else if (declarations.length === 0) {
     throw new EntryNotFoundError(contract, key);
   }
@@ -13,16 +22,9 @@ const findDeclaration = (contract, key) => {
   return declarations[0];
 };
 
-// Keep process.env variables to only works with safe values
-const getDeclaredEnvVariables = contract => contract.reduce((acc, { key }) => {
-  acc[key] = process.env[key];
-
-  return acc;
-}, {});
-
-// "default" keyword is annoying to works with
-// Internally renames in "defaultValue"
-const sanitizeDeclaration = declaration => ({
+// Internally renames "default" into "defaultValue":
+// ("default" keyword is annoying to works with)
+const sanitizeEntry = declaration => ({
   key: declaration.key,
   type: declaration.type,
   defaultValue: declaration.default,
@@ -32,6 +34,10 @@ const sanitizeDeclaration = declaration => ({
 
 const transformComposedType = (type, value) => {
   switch (type) {
+    case 'stringsArray':
+      return value
+        .split(',')
+        .map(item => item.toString());
     case 'integersArray':
       return value
         .split(',')
@@ -41,9 +47,31 @@ const transformComposedType = (type, value) => {
   }
 };
 
+const processKey = (key, value, { contract }) => {
+  const { type, defaultValue, transform } = findDeclaration(contract, key);
+  let result = value || defaultValue;
+
+  if (!result) {
+    throw new ResultNotFoundError(key);
+  }
+
+  if (COMPOSED_TYPES.includes(type)) {
+    result = transformComposedType(type, result);
+  }
+
+  return transform
+    ? transform(result)
+    : result;
+};
+
+const extractEnvVariables = contract => contract
+  .reduce((acc, { key }) => {
+    acc[key] = processKey(key, process.env[key], { contract });
+
+    return acc;
+  }, {});
+
 module.exports = {
-  findDeclaration,
-  getDeclaredEnvVariables,
-  sanitizeDeclaration,
-  transformComposedType,
+  sanitizeEntry,
+  extractEnvVariables,
 };

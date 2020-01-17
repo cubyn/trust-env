@@ -1,9 +1,13 @@
 const isJs = require('is_js');
 
 const { slice } = Array.prototype;
+const COMPOSED_ARRAY_TYPES = ['string', 'integer'];
 
-const integersArray = (value) => {
-  const isArray = isJs.array(value) && isJs.integer(value[0]);
+/**
+ * Returns a function to validate composed array types (e.g: stringsArray)
+ */
+const scalarArrayTypeBuilder = scalarType => (value) => {
+  const isArray = isJs.array(value) && isJs[scalarType](value[0]);
 
   if (isArray) {
     if (value.length > 1) {
@@ -15,8 +19,6 @@ const integersArray = (value) => {
 
   return false;
 };
-
-isJs.integersArray = integersArray;
 
 const getParams = (args) => {
   let params = slice.call(args);
@@ -52,15 +54,12 @@ const any = (func) => {
   };
 };
 
-// https://github.com/arasatasaygin/is.js/blob/master/is.js#L874
-const setInterfaces = () => {
-  const OPTIONS = ['integersArray'];
+COMPOSED_ARRAY_TYPES.forEach((type) => {
+  const composedTypeName = `${type}sArray`;
 
-  OPTIONS.forEach((option) => {
-    isJs.not[option] = not(isJs[option]);
-    isJs.all[option] = all(isJs[option]);
-    isJs.any[option] = any(isJs[option]);
-  });
-};
-
-setInterfaces();
+  isJs[composedTypeName] = scalarArrayTypeBuilder(type);
+  // https://github.com/arasatasaygin/is.js/blob/master/is.js#L874
+  isJs.not[composedTypeName] = not(isJs[composedTypeName]);
+  isJs.all[composedTypeName] = all(isJs[composedTypeName]);
+  isJs.any[composedTypeName] = any(isJs[composedTypeName]);
+});

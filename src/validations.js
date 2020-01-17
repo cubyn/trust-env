@@ -1,19 +1,20 @@
 const isJs = require('is_js');
 const {
   ContractNotFoundError,
-  DefaultInvalidTypeError,
-  DuplicateEntriesError,
-  ProcessEnvEmptyError,
+  EntryDefaultTypeNotValidError,
+  EntryNotUniqueError,
+  EntryNotValidError,
+  ProcessEnvNotFoundError,
 } = require('./errors');
 require('./types');
 
 const assertContractExists = (contract) => {
-  if (!contract || !contract.length) {
+  if (isJs.empty(contract)) {
     throw new ContractNotFoundError();
   }
 };
 
-const assertNoDuplicatesEntries = (contract) => {
+const assertUniqueEntries = (contract) => {
   const duplicates = contract
     .map(({ key }) => key)
     .reduce((acc, element, i, arr) => {
@@ -25,45 +26,42 @@ const assertNoDuplicatesEntries = (contract) => {
     }, []);
 
   if (duplicates.length) {
-    throw new DuplicateEntriesError(contract, duplicates);
+    throw new EntryNotUniqueError(contract, duplicates);
   }
 };
+const assertValidEntries = (contract) => {
+  contract.forEach((entry) => {
+    const { key, type, defaultValue, validator } = entry;
 
-const assertEntriesValidation = (contract) => {
-  const declarationsValidations = contract.map((declaration) => {
-    const defaultRightType = isJs[declaration.type](declaration.defaultValue);
-
-    if (declaration.defaultValue && !defaultRightType) {
-      throw new DefaultInvalidTypeError(declaration.defaultValue, declaration.type);
+    if (isJs.any.falsy(key, type)) {
+      throw new EntryNotValidError(entry);
     }
 
-    if (declaration.validator) {
-      const isValid = declaration.validator(declaration);
+    if (defaultValue && isJs.not[type](defaultValue)) {
+      // TODO extends EntryNotValidError
+      throw new EntryDefaultTypeNotValidError(defaultValue, type);
+    }
 
-      if (!isValid) {
-        throw new Error();
+    if (validator) {
+      // TODO injects value in validator function
+      // TODO test validator
+      if (!validator(entry)) {
+        // TODO extends EntryNotValidError
+        throw new EntryNotValidError();
       }
     }
-
-    return true;
   });
-
-  const allValid = declarationsValidations.every(validation => validation === true);
-
-  if (!allValid) {
-    throw new Error();
-  }
 };
 
 const assertProcessEnvExists = (processEnv) => {
   if (isJs.empty(processEnv)) {
-    throw new ProcessEnvEmptyError();
+    throw new ProcessEnvNotFoundError();
   }
 };
 
 module.exports = {
   assertContractExists,
-  assertEntriesValidation,
-  assertNoDuplicatesEntries,
+  assertValidEntries,
+  assertUniqueEntries,
   assertProcessEnvExists,
 };

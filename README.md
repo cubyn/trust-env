@@ -12,10 +12,12 @@ $ yarn add @devcubyn/carotte-env-validation
 ## Usage
 
 ```js
-// src/index.js
+// src/drivers/env.js
 
 const env = require('@devcubyn/env-validation');
-const envContract = [
+
+// Provides a contract for declaring and validating process.env variables
+module.exports = env.config([
   {
     key: 'DB_HOST',
     type: 'string',
@@ -25,8 +27,15 @@ const envContract = [
     type: 'number',
     default: 3306,
   },
-];
-env.config(envContract);
+]);
+```
+
+```js
+// src/index.js
+
+// Or whatever the way env variables are injected
+require('dotenv').config();
+require('src/drivers/env');
 
 // ...
 ```
@@ -34,9 +43,7 @@ env.config(envContract);
 ```js
 // src/anywhere.js
 
-const env = require('@devcubyn/env-validation');
-
-const { DB_HOST, DB_PORT } = env.get(['DB_HOST', 'DB_PORT']);
+const { DB_HOST, DB_PORT } = require('../drivers/env');
 
 // ...
 ```
@@ -60,7 +67,7 @@ async function handler({ data }) {
 
 ### Features
 
-* Handle the case where process.env variables are updated after validations
+* Handles the case where process.env variables are updated in the code (bad practice, but can happen)
 
 ### Type checks
 
@@ -68,3 +75,19 @@ The `type` can be:
 
 * [those given by is.js](https://github.com/arasatasaygin/is.js#type-checks)
 * `integersArray`
+
+### Default value
+
+Even with the default value, the variable must still exist in process.env.
+This avoids a "fake configuration", which is based only on the contract.
+
+```js
+env.config([
+  {
+    // process.env.THROTTLE_MS is not defined
+    key: 'THROTTLE_MS',
+    type: 'integer',
+    default: 1000,
+  },
+]);
+```

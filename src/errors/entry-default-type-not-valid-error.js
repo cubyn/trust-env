@@ -1,6 +1,6 @@
-module.exports = class DefaultInvalidTypeError extends Error {
+module.exports = class EntryDefaultTypeNotValidError extends Error {
   constructor(defaultValue, type) {
-    super(`Default ${defaultValue} is invalid type. ${type} expected`);
+    super(`Entry default: ${defaultValue} is not valid (${type} expected)`);
 
     this.name = this.constructor.name;
     this.defaultValue = defaultValue;
