@@ -8,10 +8,9 @@ const {
   assertUniqueEntries,
 } = require('./validations');
 
-// TODO add "value" in param of validator function
-// TODO rename package into safe-env
-// TODO Throws if required declarations props are not found
+// TODO add "variable" to validator function
 // TODO Validate by type or validate function if exists
+// TODO add "value" in param of validator function
 // TODO Give a type make it required? No (e.g: type null or undefined)
 // TODO Add type numbersArray
 // TODO transform()
