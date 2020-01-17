@@ -31,24 +31,29 @@ const assertUniqueEntries = (contract) => {
 };
 const assertValidEntries = (contract) => {
   contract.forEach((entry) => {
-    const { key, type, defaultValue, validator } = entry;
+    const { key, type, validator, defaultValue } = entry;
 
-    if (isJs.any.falsy(key, type)) {
+    if (isJs.falsy(key)) {
       throw new EntryNotValidError(entry);
+    }
+
+    if (isJs.all.falsy(type, validator) || isJs.all.truthy(type, validator)) {
+      throw new EntryNotValidError(entry);
+    }
+
+    if (validator) {
+      if (isJs.not.function(validator)) {
+        throw new EntryNotValidError(entry);
+      }
+
+      if (isJs.not.truthy(validator(entry))) {
+        throw new EntryNotValidError(entry);
+      }
     }
 
     if (defaultValue && isJs.not[type](defaultValue)) {
       // TODO extends EntryNotValidError
       throw new EntryDefaultTypeNotValidError(key, defaultValue, type);
-    }
-
-    if (validator) {
-      // TODO injects value in validator function
-      // TODO test validator
-      if (!validator(entry)) {
-        // TODO extends EntryNotValidError
-        throw new EntryNotValidError();
-      }
     }
   });
 };

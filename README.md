@@ -93,3 +93,18 @@ env.config([
   },
 ]);
 ```
+
+### Validator
+
+* Override `type` property validation
+* Must returns a truthy to validate entry
+* `type` and `validator` cannot be used in the same entry
+
+```js
+env.config([
+  {
+    key: 'DB_HOST',
+    validator: entry => entry.startsWith('mysql'),
+  },
+]);
+```

@@ -24,13 +24,26 @@ const findDeclaration = (contract, key) => {
 
 // Internally renames "default" into "defaultValue":
 // ("default" property is annoying to works with)
-const sanitizeEntry = declaration => ({
-  key: declaration.key,
-  type: declaration.type,
-  defaultValue: declaration.default,
-  validator: declaration.validator,
-  transform: declaration.transform,
-});
+const sanitizeEntry = (declaration) => {
+  const result = {
+    key: declaration.key,
+    type: declaration.type,
+  };
+
+  if (declaration.default) {
+    result.defaultValue = declaration.default;
+  }
+
+  if (declaration.validator) {
+    result.validator = declaration.validator;
+  }
+
+  if (declaration.transform) {
+    result.transform = declaration.transform;
+  }
+
+  return result;
+};
 
 const transformComposedType = (type, value) => {
   switch (type) {

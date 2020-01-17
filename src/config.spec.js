@@ -40,12 +40,72 @@ describe('#config', () => {
   });
 
   describe('declarations validation', () => {
-    describe('when key or type properties are not found', () => {
+    describe('when key property is not found', () => {
+      it('throws with EntryNotValidError', () => {
+        const contract = [{ type: 'string' }];
+
+        expect(() => envLib.config({ contract }))
+          .toThrow(EntryNotValidError);
+      });
+    });
+
+    describe('when type or validator properties are not found', () => {
       it('throws with EntryNotValidError', () => {
         const contract = [{ key: 'DB_HOST' }];
 
         expect(() => envLib.config({ contract }))
           .toThrow(EntryNotValidError);
+      });
+    });
+
+    describe('when type and validator properties are found', () => {
+      it('throws with EntryNotValidError', () => {
+        const contract = [{
+          key: 'DB_HOST',
+          type: 'string',
+          validator: entry => entry.key === 'DB_HOST',
+        }];
+
+        expect(() => envLib.config({ contract }))
+          .toThrow(EntryNotValidError);
+      });
+    });
+
+    describe('when validator is not a function', () => {
+      it('throws with EntryNotValidError', () => {
+        const contract = [{
+          key: 'DB_HOST',
+          type: 'string',
+          validator: true,
+        }];
+
+        expect(() => envLib.config({ contract }))
+          .toThrow(EntryNotValidError);
+      });
+    });
+
+    describe('when validator function does not return a truthy', () => {
+      it('throws with EntryNotValidError', () => {
+        const contract = [{
+          key: 'DB_HOST',
+          type: 'string',
+          validator: entry => entry && false,
+        }];
+
+        expect(() => envLib.config({ contract }))
+          .toThrow(EntryNotValidError);
+      });
+    });
+
+    describe('when validator function returns a truthy', () => {
+      it('does not throws', () => {
+        const contract = [{
+          key: 'DB_HOST',
+          validator: entry => entry.key.startsWith('DB'),
+        }];
+
+        expect(() => envLib.config({ contract }))
+          .not.toThrow(EntryNotValidError);
       });
     });
 
