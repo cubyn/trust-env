@@ -29,7 +29,7 @@ const assertUniqueEntries = (contract) => {
   }
 };
 
-const assertValidEntries = (contract) => {
+const assertValidEntries = (contract, variables) => {
   contract.forEach((entry) => {
     const { key, type, validator, defaultValue } = entry;
 
@@ -46,7 +46,9 @@ const assertValidEntries = (contract) => {
         throw new EntryNotValidError(entry);
       }
 
-      if (isJs.not.truthy(validator(entry))) {
+      const value = variables[entry.key];
+
+      if (isJs.not.truthy(validator({ value, entry, contract, isJs }))) {
         throw new EntryNotValidError(entry);
       }
     }

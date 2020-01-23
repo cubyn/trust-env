@@ -63,7 +63,7 @@ describe('#config', () => {
         const contract = [{
           key: 'DB_HOST',
           type: 'string',
-          validator: entry => entry.key === 'DB_HOST',
+          validator: ({ entry }) => entry.key === 'DB_HOST',
         }];
 
         expect(() => envLib.config({ contract }))
@@ -88,8 +88,7 @@ describe('#config', () => {
       it('throws with EntryNotValidError', () => {
         const contract = [{
           key: 'DB_HOST',
-          type: 'string',
-          validator: entry => entry && false,
+          validator: ({ entry }) => !!entry && false,
         }];
 
         expect(() => envLib.config({ contract }))

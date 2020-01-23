@@ -95,17 +95,26 @@ env.config([
 ]);
 ```
 
+### Transform
+
+* Param
+  * `value`: the actual process.env value (`default` applied if `value` is not found and `transform` applied if exists)
+
 ### Validator
 
-* Override `type` property validation
 * Must returns a truthy to validate entry
-* `type` and `validator` cannot be used in the same entry
+* `type` and `validator` cannot be used in the same entry (override `type` validation)
+* Params
+  * `value`: the actual process.env value (`default` applied if `value` is not found and `transform` applied if exists)
+  * `entry`: the current entry to be validated
+  * `contract`: the whole contract declaration
+  * `isJs`
 
 ```js
 env.config([
   {
     key: 'DB_HOST',
-    validator: entry => entry.startsWith('mysql'),
+    validator: ({ value }) => value.startsWith('mysql'),
   },
 ]);
 ```

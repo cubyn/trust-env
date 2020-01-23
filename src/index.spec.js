@@ -5,7 +5,7 @@ describe('src/index.js', () => {
     process.env.API_URL = 'https://endpoint-a.pi/v3';
     process.env.API_TOKEN = '0%f_a+cVF3';
     process.env.PRICES_RANGE = '0.01,9999.99';
-    process.env.POSSIBLES_ALGORITHMS = 'RSA,AES,Blowfish';
+    process.env.POSSIBLES_ALGORITHMS = 'RSA,aes,Blowfish';
     process.env.DISABLED_USERS_PID = '321,987,654';
   });
 
@@ -27,10 +27,8 @@ describe('src/index.js', () => {
       },
       {
         key: 'POSSIBLES_ALGORITHMS',
-        type: 'stringsArray',
-        required: true,
-        // validator: ({ value }) => value.includes('AES'),
-        transform: value => value.map(item => item.toUpperCase()),
+        validator: ({ value, isJs }) => isJs.existy('AES', value),
+        transform: value => value.split(',').map(item => item.toUpperCase()),
       },
       // {
       //   key: 'THROTTLE_MS',

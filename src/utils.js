@@ -62,21 +62,20 @@ const transformComposedType = (type, value) => {
   }
 };
 
+/**
+ * No validations are supposed to be done
+ */
 const extractEnvVariables = contract => contract.reduce((acc, { key }) => {
   const { type, defaultValue, transform } = findEntry(contract, key);
-  let result = process.env[key] || defaultValue;
-
-  if (!result) {
-    throw new ResultNotFoundError(key);
-  }
+  let value = process.env[key] || defaultValue;
 
   if (COMPOSED_TYPES.includes(type)) {
-    result = transformComposedType(type, result);
+    value = transformComposedType(type, value);
   }
 
   acc[key] = transform
-    ? transform(result)
-    : result;
+    ? transform(value)
+    : value;
 
   return acc;
 }, {});
