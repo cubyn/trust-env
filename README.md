@@ -2,7 +2,7 @@
 
 Makes the usage of process.env variables more secure by validating them againt a contract.
 
-Fails fast at runtime if contract requirements are not met.
+Fails at runtime if contract requirements are not met.
 
 ## Installation
 
@@ -28,6 +28,11 @@ module.exports = env.config([
     type: 'number',
     default: 3306,
   },
+  {
+    key: 'DEFAULT_USER',
+    type: 'json',
+    validator: ({ value, isJs }) => isJs.propertyDefined(value, 'name'),
+  },
 ]);
 ```
 
@@ -44,40 +49,51 @@ require('src/drivers/env');
 ```js
 // src/anywhere.js
 
-const { DB_HOST, DB_PORT } = require('../drivers/env');
+const { DB_HOST, DB_PORT, DEFAULT_USER } = require('../drivers/env');
 
 // ...
 ```
 
-Make "top of file" process.env validations deprecated:
+Make the following "top of file" validations deprecated:
 
 ```js
-// DEPRECATED
-// src/my-λ:v1/index.js
-
-// ...
+// src/function.js
 
 assert(process.env.MY_ENV_VAR, Error, 'Missing env var [MY_ENV_VAR]');
 
 async function handler({ data }) {
   // ...
 }
+
+// ...
 ```
 
 ## Documentation
 
 ### Features
 
-* Handles the case where process.env variables are updated in the code (bad practice, but can happen)
+* Cache process.env variables and only works with these ones (avoid process.env update after runtime)
+* Declare an entry in contract with the following:
+  * `key`: the name of the variable to search in process.env
+  * `type`: to cast process.env variable
+  * `default`: value if process.env variable is not found
+  * `required`: whether a value must be found
+  * `validator`: function to validate the process.env variable
+  * `transform`: function to validate the process.env variable
 
 ### Type checks
 
 The `type` can be:
 
-* [those given by is.js](https://github.com/arasatasaygin/is.js#type-checks)
 * `stringsArray`
 * `integersArray`
 * `numbersArray`
+* `string`
+* `integer`
+* `number`
+* `boolean`
+* `date`
+* `json`
 
 ### Default value
 
@@ -97,15 +113,17 @@ env.config([
 
 ### Transform
 
-* Param
-  * `value`: the actual process.env value (`default` applied if `value` is not found and `transform` applied if exists)
+* Params
+  * `value`: the actual process.env value (`type` applied, `default` applied if `value` is not found and `transform` applied if exists)
+  * `entry`: the current entry to be validated
+  * `contract`: the whole contract declaration
+  * `isJs`
 
 ### Validator
 
 * Must returns a truthy to validate entry
-* `type` and `validator` cannot be used in the same entry (override `type` validation)
 * Params
-  * `value`: the actual process.env value (`default` applied if `value` is not found and `transform` applied if exists)
+  * `value`: the actual process.env value (`type` applied, `default` applied if `value` is not found and `transform` applied if exists)
   * `entry`: the current entry to be validated
   * `contract`: the whole contract declaration
   * `isJs`
@@ -114,7 +132,7 @@ env.config([
 env.config([
   {
     key: 'DB_HOST',
-    validator: ({ value }) => value.startsWith('mysql'),
+    validator: ({ value }) => value.startsWith('__'),
   },
 ]);
 ```

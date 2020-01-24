@@ -1,8 +1,10 @@
 const {
   ContractNotFoundError,
-  EntryDefaultTypeNotValidError,
+  EntryKeyNotFoundError,
   EntryNotUniqueError,
   EntryNotValidError,
+  EntryTypeNotFoundError,
+  EntryValidatorNotSucceededError,
 } = require('./errors');
 const envLib = require('.');
 
@@ -21,7 +23,7 @@ describe('#config', () => {
 
     describe('when contract is empty', () => {
       it('throws with ContractNotFoundError', () => {
-        expect(() => envLib.config({ contract: [] }))
+        expect(() => envLib.config([]))
           .toThrow(ContractNotFoundError);
       });
     });
@@ -33,7 +35,7 @@ describe('#config', () => {
           { key: 'DB_HOST' },
         ];
 
-        expect(() => envLib.config({ contract }))
+        expect(() => envLib.config(contract))
           .toThrow(EntryNotUniqueError);
       });
     });
@@ -41,58 +43,33 @@ describe('#config', () => {
 
   describe('entries validation', () => {
     describe('when key property is not found', () => {
-      it('throws with EntryNotValidError', () => {
+      it('throws with EntryKeyNotFoundError', () => {
         const contract = [{ type: 'string' }];
 
-        expect(() => envLib.config({ contract }))
-          .toThrow(EntryNotValidError);
+        expect(() => envLib.config(contract))
+          .toThrow(EntryKeyNotFoundError);
       });
     });
 
-    describe('when type or validator properties are not found', () => {
-      it('throws with EntryNotValidError', () => {
+    describe('when type property is not found', () => {
+      it('throws with EntryTypeNotFoundError', () => {
         const contract = [{ key: 'DB_HOST' }];
 
-        expect(() => envLib.config({ contract }))
-          .toThrow(EntryNotValidError);
-      });
-    });
-
-    describe('when type and validator properties are found', () => {
-      it('throws with EntryNotValidError', () => {
-        const contract = [{
-          key: 'DB_HOST',
-          type: 'string',
-          validator: ({ entry }) => entry.key === 'DB_HOST',
-        }];
-
-        expect(() => envLib.config({ contract }))
-          .toThrow(EntryNotValidError);
-      });
-    });
-
-    describe('when validator is not a function', () => {
-      it('throws with EntryNotValidError', () => {
-        const contract = [{
-          key: 'DB_HOST',
-          type: 'string',
-          validator: true,
-        }];
-
-        expect(() => envLib.config({ contract }))
-          .toThrow(EntryNotValidError);
+        expect(() => envLib.config(contract))
+          .toThrow(EntryTypeNotFoundError);
       });
     });
 
     describe('when validator function does not return a truthy', () => {
-      it('throws with EntryNotValidError', () => {
+      it('throws with EntryValidatorNotSucceededError', () => {
         const contract = [{
           key: 'DB_HOST',
-          validator: ({ entry }) => !!entry && false,
+          type: 'string',
+          validator: () => false,
         }];
 
-        expect(() => envLib.config({ contract }))
-          .toThrow(EntryNotValidError);
+        expect(() => envLib.config(contract))
+          .toThrow(EntryValidatorNotSucceededError);
       });
     });
 
@@ -100,26 +77,27 @@ describe('#config', () => {
       it('does not throws', () => {
         const contract = [{
           key: 'DB_HOST',
-          validator: entry => entry.key.startsWith('DB'),
+          type: 'string',
+          validator: ({ value }) => value.startsWith('local'),
         }];
 
-        expect(() => envLib.config({ contract }))
+        expect(() => envLib.config(contract))
           .not.toThrow(EntryNotValidError);
       });
     });
 
-    describe('when the type of the default is not the same as the type property', () => {
-      it('throws with EntryDefaultTypeNotValidError', () => {
-        const contract = [{
-          key: 'DB_HOST',
-          type: 'string',
-          default: 1,
-        }];
+    // describe('when the type of the default is not the same as the type property', () => {
+    //   it('throws with EntryDefaultTypeNotValidError', () => {
+    //     const contract = [{
+    //       key: 'DB_HOST',
+    //       type: 'string',
+    //       default: 1,
+    //     }];
 
-        expect(() => envLib.config({ contract }))
-          .toThrow(EntryDefaultTypeNotValidError);
-      });
-    });
+    //     expect(() => envLib.config(contract))
+    //       .toThrow(EntryDefaultTypeNotValidError);
+    //   });
+    // });
   });
 
   it('returns functions and variables', () => {
@@ -128,7 +106,7 @@ describe('#config', () => {
       type: 'string',
     }];
 
-    expect(envLib.config({ contract })).toEqual({
+    expect(envLib.config(contract)).toEqual({
       get: expect.any(Function),
       getPrefix: expect.any(Function),
       config: expect.any(Function),

@@ -7,13 +7,15 @@ describe('src/index.js', () => {
     process.env.PRICES_RANGE = '0.01,9999.99';
     process.env.POSSIBLES_ALGORITHMS = 'RSA,aes,Blowfish';
     process.env.DISABLED_USERS_PID = '321,987,654';
+    process.env.LIMIT_DATE = '1/1/2020';
+    process.env.DEFAULT_USER = '{"name": "Foo"}';
   });
 
   it('works', () => {
-    const CONTRACT = [
+    const contract = [
       {
         key: 'API_URL',
-        type: 'url',
+        type: 'string',
         default: 'https://endpoint-a.pi/v1',
       },
       {
@@ -23,21 +25,25 @@ describe('src/index.js', () => {
       {
         key: 'PRICES_RANGE',
         type: 'numbersArray',
-        required: true,
       },
       {
         key: 'POSSIBLES_ALGORITHMS',
+        type: 'stringsArray',
+        transform: ({ value }) => value.map(item => item.toUpperCase()),
         validator: ({ value, isJs }) => isJs.existy('AES', value),
-        transform: value => value.split(',').map(item => item.toUpperCase()),
       },
-      // {
-      //   key: 'THROTTLE_MS',
-      //   type: 'integer',
-      //   default: 1000,
-      // },
+      {
+        key: 'LIMIT_DATE',
+        type: 'date',
+      },
+      {
+        key: 'DEFAULT_USER',
+        type: 'json',
+        validator: ({ value, isJs }) => isJs.propertyDefined(value, 'name'),
+      },
     ];
 
-    const env = envLib.config({ contract: CONTRACT });
+    const env = envLib.config(contract);
 
     process.env.API_TOKEN = null;
 
@@ -46,9 +52,15 @@ describe('src/index.js', () => {
       API_TOKEN: '0%f_a+cVF3',
       PRICES_RANGE: [0.01, 9999.99],
       POSSIBLES_ALGORITHMS: ['RSA', 'AES', 'BLOWFISH'],
+      LIMIT_DATE: new Date('1/1/2020'),
+      DEFAULT_USER: { name: 'Foo' },
       get: expect.any(Function),
       getPrefix: expect.any(Function),
       config: expect.any(Function),
+    });
+    expect(env.getPrefix('API')).toEqual({
+      API_URL: 'https://endpoint-a.pi/v3',
+      API_TOKEN: '0%f_a+cVF3',
     });
     expect(env.get('DISABLED_USERS_PID')).toBeUndefined();
     expect(env.get('THROTTLE_MS')).toBeUndefined();

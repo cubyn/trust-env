@@ -1,46 +1,21 @@
-const { EntryNotFoundError } = require('./errors');
+const isJs = require('is_js');
+const {
+  EntryKeyNotFoundError,
+  EntryTypeNotFoundError,
+  EntryValidatorNotSucceededError,
+} = require('./errors');
 
-const COMPOSED_TYPES = [
-  'stringsArray',
-  'integersArray',
-  'numbersArray',
-];
+const sanitizeEntryKeys = entry => ({
+  key: entry.key,
+  type: entry.type,
+  // Internally renames "default" into "defaultValue":
+  // ("default" property is annoying to works with)
+  defaultValue: entry.default,
+  validator: entry.validator,
+  transform: entry.transform,
+});
 
-const findEntry = (contract, key) => {
-  // Entry unicity is already checked
-  const entry = contract.find(item => item.key === key);
-
-  if (entry.length === 0) {
-    throw new EntryNotFoundError(contract, key);
-  }
-
-  return entry;
-};
-
-// Internally renames "default" into "defaultValue":
-// ("default" property is annoying to works with)
-const sanitizeEntry = (entry) => {
-  const result = {
-    key: entry.key,
-    type: entry.type,
-  };
-
-  if (entry.default) {
-    result.defaultValue = entry.default;
-  }
-
-  if (entry.validator) {
-    result.validator = entry.validator;
-  }
-
-  if (entry.transform) {
-    result.transform = entry.transform;
-  }
-
-  return result;
-};
-
-const transformComposedType = (type, value) => {
+const castToType = (type, value) => {
   switch (type) {
     case 'stringsArray':
       return value
@@ -54,30 +29,52 @@ const transformComposedType = (type, value) => {
       return value
         .split(',')
         .map(item => parseFloat(item));
+    case 'string':
+      return value.toString();
+    case 'integer':
+      return parseInt(value, 10);
+    case 'number':
+      return parseFloat(value);
+    case 'boolean':
+      return Boolean(value);
+    case 'date':
+      return new Date(value);
+    case 'json':
+      return JSON.parse(value);
     default:
       throw new Error();
   }
 };
 
-/**
- * No validations are supposed to be done
- */
-const extractEnvVariables = contract => contract.reduce((acc, { key }) => {
-  const { type, defaultValue, transform } = findEntry(contract, key);
-  let value = process.env[key] || defaultValue;
+const extractEnvVariables = contract => contract.reduce((acc, entry) => {
+  const { key, type, defaultValue, transform, validator } = entry;
 
-  if (COMPOSED_TYPES.includes(type)) {
-    value = transformComposedType(type, value);
+  if (isJs.falsy(key)) {
+    throw new EntryKeyNotFoundError(entry);
   }
 
-  acc[key] = transform
-    ? transform(value)
-    : value;
+  if (isJs.falsy(type)) {
+    throw new EntryTypeNotFoundError(entry);
+  }
+
+  let value = castToType(type, process.env[key] || defaultValue);
+
+  if (transform) {
+    value = transform({ value, entry, contract, isJs });
+  }
+
+  if (validator) {
+    if (isJs.not.truthy(validator({ value, entry, contract, isJs }))) {
+      throw new EntryValidatorNotSucceededError(entry);
+    }
+  }
+
+  acc[key] = value;
 
   return acc;
 }, {});
 
 module.exports = {
-  sanitizeEntry,
+  sanitizeEntryKeys,
   extractEnvVariables,
 };
