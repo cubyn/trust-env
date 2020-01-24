@@ -1,7 +1,4 @@
-const {
-  EntryNotFoundError,
-  ResultNotFoundError,
-} = require('./errors');
+const { EntryNotFoundError } = require('./errors');
 
 const COMPOSED_TYPES = [
   'stringsArray',
