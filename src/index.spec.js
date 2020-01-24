@@ -47,6 +47,7 @@ describe('src/index.js', () => {
       PRICES_RANGE: [0.01, 9999.99],
       POSSIBLES_ALGORITHMS: ['RSA', 'AES', 'BLOWFISH'],
       get: expect.any(Function),
+      getPrefix: expect.any(Function),
       config: expect.any(Function),
     });
     expect(env.get('DISABLED_USERS_PID')).toBeUndefined();

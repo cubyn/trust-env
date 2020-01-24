@@ -28,6 +28,7 @@ const config = ({ contract } = {}) => {
 
   return {
     get: get(VARIABLES),
+    getPrefix: getPrefix(VARIABLES),
     ...module.exports,
     ...VARIABLES,
   };
@@ -43,6 +44,18 @@ const get = variables => (keys) => {
   }
 
   return variables[keys];
+};
+
+const getPrefix = variables => (prefix) => {
+  const variablesEntries = Object.entries(variables);
+
+  return variablesEntries.reduce((acc, [key, value]) => {
+    if (key.startsWith(prefix)) {
+      acc[key] = value;
+    }
+
+    return acc;
+  }, {});
 };
 
 module.exports = { config };

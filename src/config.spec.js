@@ -130,26 +130,9 @@ describe('#config', () => {
 
     expect(envLib.config({ contract })).toEqual({
       get: expect.any(Function),
+      getPrefix: expect.any(Function),
       config: expect.any(Function),
       DB_HOST: 'localhost',
-    });
-  });
-
-  describe('type property', () => {
-    describe('when the type is unknow', () => {
-      it.todo('throws');
-    });
-  });
-
-  describe('required property', () => {
-    describe('when the variable is required', () => {
-      describe('when the variable is found', () => {
-        it.todo('returns the variable');
-      });
-
-      describe('when the variable is not found', () => {
-        it.todo('throws');
-      });
     });
   });
 });
