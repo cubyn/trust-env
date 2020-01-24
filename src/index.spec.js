@@ -4,7 +4,8 @@ describe('src/index.js', () => {
   beforeEach(() => {
     process.env.API_URL = 'https://endpoint-a.pi/v3';
     process.env.API_TOKEN = '0%f_a+cVF3';
-    process.env.POSSIBLES_ALGORITHMS = 'RSA,AES,Blowfish';
+    process.env.PRICES_RANGE = '0.01,9999.99';
+    process.env.POSSIBLES_ALGORITHMS = 'RSA,aes,Blowfish';
     process.env.DISABLED_USERS_PID = '321,987,654';
   });
 
@@ -18,14 +19,16 @@ describe('src/index.js', () => {
       {
         key: 'API_TOKEN',
         type: 'string',
+      },
+      {
+        key: 'PRICES_RANGE',
+        type: 'numbersArray',
         required: true,
       },
       {
         key: 'POSSIBLES_ALGORITHMS',
-        type: 'stringsArray',
-        required: true,
-        // validator: ({ value }) => value.includes('AES'),
-        transform: value => value.map(item => item.toUpperCase()),
+        validator: ({ value, isJs }) => isJs.existy('AES', value),
+        transform: value => value.split(',').map(item => item.toUpperCase()),
       },
       // {
       //   key: 'THROTTLE_MS',
@@ -34,18 +37,17 @@ describe('src/index.js', () => {
       // },
     ];
 
-    const env = envLib.config({
-      contract: CONTRACT,
-      // options: { throwOnMissing: true },
-    });
+    const env = envLib.config({ contract: CONTRACT });
 
     process.env.API_TOKEN = null;
 
     expect(env).toEqual({
       API_URL: 'https://endpoint-a.pi/v3',
       API_TOKEN: '0%f_a+cVF3',
+      PRICES_RANGE: [0.01, 9999.99],
       POSSIBLES_ALGORITHMS: ['RSA', 'AES', 'BLOWFISH'],
       get: expect.any(Function),
+      getPrefix: expect.any(Function),
       config: expect.any(Function),
     });
     expect(env.get('DISABLED_USERS_PID')).toBeUndefined();

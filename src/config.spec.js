@@ -39,7 +39,7 @@ describe('#config', () => {
     });
   });
 
-  describe('declarations validation', () => {
+  describe('entries validation', () => {
     describe('when key property is not found', () => {
       it('throws with EntryNotValidError', () => {
         const contract = [{ type: 'string' }];
@@ -63,7 +63,7 @@ describe('#config', () => {
         const contract = [{
           key: 'DB_HOST',
           type: 'string',
-          validator: entry => entry.key === 'DB_HOST',
+          validator: ({ entry }) => entry.key === 'DB_HOST',
         }];
 
         expect(() => envLib.config({ contract }))
@@ -88,8 +88,7 @@ describe('#config', () => {
       it('throws with EntryNotValidError', () => {
         const contract = [{
           key: 'DB_HOST',
-          type: 'string',
-          validator: entry => entry && false,
+          validator: ({ entry }) => !!entry && false,
         }];
 
         expect(() => envLib.config({ contract }))
@@ -131,26 +130,9 @@ describe('#config', () => {
 
     expect(envLib.config({ contract })).toEqual({
       get: expect.any(Function),
+      getPrefix: expect.any(Function),
       config: expect.any(Function),
       DB_HOST: 'localhost',
-    });
-  });
-
-  describe('type property', () => {
-    describe('when the type is unknow', () => {
-      it.todo('throws');
-    });
-  });
-
-  describe('required property', () => {
-    describe('when the variable is required', () => {
-      describe('when the variable is found', () => {
-        it.todo('returns the variable');
-      });
-
-      describe('when the variable is not found', () => {
-        it.todo('throws');
-      });
     });
   });
 });

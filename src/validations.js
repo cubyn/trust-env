@@ -4,7 +4,6 @@ const {
   EntryDefaultTypeNotValidError,
   EntryNotUniqueError,
   EntryNotValidError,
-  ProcessEnvNotFoundError,
 } = require('./errors');
 require('./types');
 
@@ -29,7 +28,8 @@ const assertUniqueEntries = (contract) => {
     throw new EntryNotUniqueError(contract, duplicates);
   }
 };
-const assertValidEntries = (contract) => {
+
+const assertValidEntries = (contract, variables) => {
   contract.forEach((entry) => {
     const { key, type, validator, defaultValue } = entry;
 
@@ -46,7 +46,9 @@ const assertValidEntries = (contract) => {
         throw new EntryNotValidError(entry);
       }
 
-      if (isJs.not.truthy(validator(entry))) {
+      const value = variables[entry.key];
+
+      if (isJs.not.truthy(validator({ value, entry, contract, isJs }))) {
         throw new EntryNotValidError(entry);
       }
     }
@@ -58,15 +60,8 @@ const assertValidEntries = (contract) => {
   });
 };
 
-const assertProcessEnvExists = (processEnv) => {
-  if (isJs.empty(processEnv)) {
-    throw new ProcessEnvNotFoundError();
-  }
-};
-
 module.exports = {
   assertContractExists,
   assertValidEntries,
   assertUniqueEntries,
-  assertProcessEnvExists,
 };
