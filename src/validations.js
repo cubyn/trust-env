@@ -1,10 +1,5 @@
 const isJs = require('is_js');
-const {
-  ContractNotFoundError,
-  EntryDefaultTypeNotValidError,
-  EntryNotUniqueError,
-  EntryNotValidError,
-} = require('./errors');
+const { ContractNotFoundError, EntryNotUniqueError } = require('./errors');
 require('./types');
 
 const assertContractExists = (contract) => {
@@ -29,39 +24,15 @@ const assertUniqueEntries = (contract) => {
   }
 };
 
-const assertValidEntries = (contract, variables) => {
-  contract.forEach((entry) => {
-    const { key, type, validator, defaultValue } = entry;
+// const assertTypeValue = (entry, value) => {
+//   const { type } = entry;
 
-    if (isJs.falsy(key)) {
-      throw new EntryNotValidError(entry);
-    }
-
-    if (isJs.all.falsy(type, validator) || isJs.all.truthy(type, validator)) {
-      throw new EntryNotValidError(entry);
-    }
-
-    if (validator) {
-      if (isJs.not.function(validator)) {
-        throw new EntryNotValidError(entry);
-      }
-
-      const value = variables[entry.key];
-
-      if (isJs.not.truthy(validator({ value, entry, contract, isJs }))) {
-        throw new EntryNotValidError(entry);
-      }
-    }
-
-    if (defaultValue && isJs.not[type](defaultValue)) {
-      // TODO extends EntryNotValidError
-      throw new EntryDefaultTypeNotValidError(key, defaultValue, type);
-    }
-  });
-};
+//   if (isJs.not[type](value)) {
+//     throw new EntryNotValidError(entry);
+//   }
+// };
 
 module.exports = {
   assertContractExists,
-  assertValidEntries,
   assertUniqueEntries,
 };

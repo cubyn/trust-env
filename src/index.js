@@ -1,30 +1,20 @@
-const {
-  sanitizeEntry,
-  extractEnvVariables,
-} = require('./utils');
-const {
-  assertContractExists,
-  assertValidEntries,
-  assertUniqueEntries,
-} = require('./validations');
+const { sanitizeEntryKeys, extractEnvVariables } = require('./utils');
+const { assertContractExists, assertUniqueEntries } = require('./validations');
 
-// TODO Get by prefix
+// TODO Test type cast (JSON, date, etc)
+// TODO Test "required"
 // TODO Give a type make it required? No (e.g: type null or undefined)
 // TODO default as function
-// TODO Required is not compatible several types (e.g: null or undefined)
-// TODO env.push({ key: `DB_PASSWORD` }) (dynamically created)
+// TODO Required is not compatible with several types (e.g: null or undefined)
 
-const config = ({ contract } = {}) => {
+const config = (contract) => {
   assertContractExists(contract);
 
-  const CONTRACT = contract.map(sanitizeEntry);
+  const CONTRACT = contract.map(sanitizeEntryKeys);
 
   assertUniqueEntries(CONTRACT);
 
-  // Retrieved before their are validated
   const VARIABLES = extractEnvVariables(CONTRACT);
-
-  assertValidEntries(CONTRACT, VARIABLES);
 
   return {
     get: get(VARIABLES),

@@ -7,18 +7,16 @@ describe('#get', () => {
     process.env.DB_HOST = 'localhost';
     process.env.DB_PORTS = '3306,3309';
 
-    env = envLib.config({
-      contract: [
-        {
-          key: 'DB_HOST',
-          type: 'string',
-        },
-        {
-          key: 'DB_PORTS',
-          type: 'integersArray',
-        },
-      ],
-    });
+    env = envLib.config([
+      {
+        key: 'DB_HOST',
+        type: 'string',
+      },
+      {
+        key: 'DB_PORTS',
+        type: 'integersArray',
+      },
+    ]);
   });
 
   describe('when there is one key', () => {
