@@ -41,7 +41,7 @@ module.exports = env.config([
 
 // Or whatever the way env variables are injected
 require('dotenv').config();
-require('src/drivers/env');
+require('./drivers/env');
 
 // ...
 ```
