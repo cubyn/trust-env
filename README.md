@@ -1,6 +1,6 @@
 # trust-env
 
-Makes the usage of process.env variables more secure by validating them againt a contract.
+Validate process.env variables againt a contract for safer use.
 
 Fails at runtime if contract requirements are not met.
 
@@ -12,19 +12,23 @@ $ yarn add trust-env
 
 ## Usage
 
-```js
-// src/drivers/env.js
+```ts
+// src/env.ts
 
-const env = require('trust-env');
+import dotenv from 'dotenv';
+import TrustEnv from 'trust-env';
 
-// Contract for declaring and validating used variables
-module.exports = env.config([
+// Or whatever the way env variables are injected
+dotenv.config();
+
+// Contract for declaring and validating variables to be used
+exports default TrustEnv([
   {
-    key: 'DB_HOST',
+    key: 'MYSQL_HOST',
     type: 'string',
   },
   {
-    key: 'DB_PORT',
+    key: 'MYSQL_PORT',
     type: 'number',
     default: 3306,
   },
@@ -36,20 +40,18 @@ module.exports = env.config([
 ]);
 ```
 
-```js
-// src/index.js
+```ts
+// src/index.ts
 
-// Or whatever the way env variables are injected
-require('dotenv').config();
-require('./drivers/env');
+import './env';
 
 // ...
 ```
 
-```js
-// src/anywhere.js
+```ts
+// src/anywhere.ts
 
-const { DB_HOST, DB_PORT, DEFAULT_USER } = require('../drivers/env');
+import { MYSQL_HOST, MYSQL_PORT, DEFAULT_USER } from './env';
 
 // ...
 ```
@@ -68,39 +70,37 @@ async function handler({ data }) {
 // ...
 ```
 
-## Documentation
+## Features
 
-### Features
-
-* Cache process.env variables and only works with these ones (avoid process.env update after runtime)
-* Declare an entry in contract with the following:
-  * `key`: the name of the variable to search in process.env
-  * `type`: to cast process.env variable
-  * `default`: value if process.env variable is not found
-  * `required`: whether a value must be found
-  * `validator`: function to validate the process.env variable
-  * `transform`: function to validate the process.env variable
+- Caches `process.env` variables to work only with them (if `process.env` is updated after runtime, these changes will have no effect)
+- Add an entry in contract:
+  - `key`: name of the variable to look for in `process.env`
+  - `type`: cast the `process.env` variable
+  - `preset`: value if `process.env` variable is not found
+  - `required`: whether the value must be found
+  - `validator`: function to validate the `process.env` variable
+  - `transform`: function to transform the `process.env` variable
 
 ### Type checks
 
-The `type` can be:
+Supported `type`:
 
-* `stringsArray`
-* `integersArray`
-* `numbersArray`
-* `string`
-* `integer`
-* `number`
-* `boolean`
-* `date`
-* `json`
+- `boolean`
+- `date`
+- `integer`
+- `integersArray`
+- `json`
+- `number`
+- `numbersArray`
+- `string`
+- `stringsArray`
 
-### Default value
+### preset value
 
-Even with the default value, the variable must still exist in process.env.
-This avoids a "fake configuration", which is based only on the contract.
+Even with the preset value, the variable must still exist in `process.env`.
+This avoids a "shadow configuration", which is only based on the contract.
 
-```js
+```ts
 env.config([
   {
     // process.env.THROTTLE_MS is not defined
@@ -111,28 +111,68 @@ env.config([
 ]);
 ```
 
-### Transform
-
-* Params
-  * `value`: the actual process.env value (`type` applied, `default` applied if `value` is not found and `transform` applied if exists)
-  * `entry`: the current entry to be validated
-  * `contract`: the whole contract declaration
-  * `isJs`
-
 ### Validator
 
-* Must returns a truthy to validate entry
-* Params
-  * `value`: the actual process.env value (`type` applied, `default` applied if `value` is not found and `transform` applied if exists)
-  * `entry`: the current entry to be validated
-  * `contract`: the whole contract declaration
-  * `isJs`
+- Returns a boolean to validate the entry
+- Params:
+  - `value`: the actual `process.env` value (`type` casting applied, `default` applied if `value` is not found and `transform` applied if exists)
+  - `entry`: the current entry to be validated
+  - `contract`: the whole contract
+  - `isJs` library
 
 ```js
 env.config([
   {
-    key: 'DB_HOST',
+    key: 'MYSQL_HOST',
     validator: ({ value }) => value.startsWith('__'),
   },
 ]);
 ```
+
+### Transform
+
+- Params:
+  - `value`: the actual `process.env` value (`type` casting applied, `default` applied if `value` is not found and `transform` applied if exists)
+  - `entry`: the current entry to be validated
+  - `contract`: the whole contract
+  - `isJs` library
+
+## TODO
+
+TODO
+
+- Add examples of variable casting
+- Verify the `process.env` is used once and cached
+- Throw and Error best practices in TS
+- Test type cast (JSON, date, etc)
+- Test "required"
+- Give a type make it required? No (e.g: type null or undefined)
+- default as function
+- Required is not compatible with several types (e.g: null or undefined)
+- Issue: when validator is used instead of type, no cast done
+
+value:
+
+- process.env
+- else default if exists
+- then cast composed type or scalar
+- then transform if exists
+
+when the `type` is validated? NEVER
+
+- then validate if exists
+
+- `type` must be scalar
+- value is casted with type
+- value is validated by `type`
+- value is validated by validator for more complex type is required (e.g: IP)
+
+{
+key: 'DB_USER',
+type: 'integer',
+}
+would give { DB_USER: 0 }, validated as integer so no error thrown
+
+SO: CANNOT USE type TO VALIDATE value SINCE IT'S NOT POSSIBLE TO GUESS THE RAW
+PROCESS.ENV TYPE
+SO: TYPE IS ONLY USED FOR CAST

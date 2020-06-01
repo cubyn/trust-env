@@ -1,5 +1,7 @@
-module.exports = class ResultNotFoundError extends Error {
-  constructor(key) {
+import { EntryKey } from '../types';
+
+export class ResultNotFoundError extends Error {
+  constructor(key: EntryKey) {
     super(`process.env.${key} not found and no default given`);
 
     this.name = this.constructor.name;
@@ -7,4 +9,4 @@ module.exports = class ResultNotFoundError extends Error {
 
     Error.captureStackTrace(this, this.constructor);
   }
-};
+}

@@ -1,5 +1,7 @@
-module.exports = class EntryNotUniqueError extends Error {
-  constructor(contract, keys) {
+import { Contract, EntryKey } from '../types';
+
+export class EntryNotUniqueError extends Error {
+  constructor(contract: Contract, keys: EntryKey[]) {
     super(`Entries with keys: ${keys} not uniques`);
 
     this.name = this.constructor.name;
@@ -8,4 +10,4 @@ module.exports = class EntryNotUniqueError extends Error {
 
     Error.captureStackTrace(this, this.constructor);
   }
-};
+}
