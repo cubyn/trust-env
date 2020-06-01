@@ -30,7 +30,7 @@ exports default TrustEnv([
   {
     key: 'MYSQL_PORT',
     type: 'number',
-    default: 3306,
+    preset: 3306,
   },
   {
     key: 'DEFAULT_USER',
@@ -106,7 +106,7 @@ env.config([
     // process.env.THROTTLE_MS is not defined
     key: 'THROTTLE_MS',
     type: 'integer',
-    default: 1000,
+    preset: 1000,
   },
 ]);
 ```
@@ -115,7 +115,10 @@ env.config([
 
 - Returns a boolean to validate the entry
 - Params:
-  - `value`: the actual `process.env` value (`type` casting applied, `default` applied if `value` is not found and `transform` applied if exists)
+  - `value`: the actual `process.env` value
+    - `type` casting applied,
+    - `preset` applied if `value` is not found
+    - `transform` applied if exists
   - `entry`: the current entry to be validated
   - `contract`: the whole contract
   - `isJs` library
@@ -132,7 +135,10 @@ env.config([
 ### Transform
 
 - Params:
-  - `value`: the actual `process.env` value (`type` casting applied, `default` applied if `value` is not found and `transform` applied if exists)
+  - `value`: the actual `process.env` value
+    - `type` casting applied,
+    - `preset` applied if `value` is not found
+    - `transform` applied if exists
   - `entry`: the current entry to be validated
   - `contract`: the whole contract
   - `isJs` library

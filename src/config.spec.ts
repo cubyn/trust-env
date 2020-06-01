@@ -82,16 +82,16 @@ describe('#config', () => {
       });
     });
 
-    // describe('when the type of the default is not the same as the type property', () => {
-    //   it('should throws with EntryDefaultTypeNotValidError', () => {
+    // describe('when the type of the preset is not the same as the type property', () => {
+    //   it('should throws with EntryPresetTypeNotValidError', () => {
     //     const contract = [{
     //       key: 'MYSQL_HOST',
     //       type: 'string',
-    //       default: 1,
+    //       preset: 1,
     //     }];
 
     //     expect(() => TrustEnv(contract))
-    //       .toThrow(EntryDefaultTypeNotValidError);
+    //       .toThrow(EntryPresetTypeNotValidError);
     //   });
     // });
   });

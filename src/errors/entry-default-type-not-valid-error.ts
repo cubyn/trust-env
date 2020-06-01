@@ -1,8 +1,8 @@
 import { EntryKey } from '../types';
 
-export class EntryDefaultTypeNotValidError extends Error {
+export class EntryPresetTypeNotValidError extends Error {
   constructor(key: EntryKey, preset, type) {
-    super(`Entry ${key} with default: ${preset} has not expected type (${type} expected)`);
+    super(`Entry ${key} with preset: ${preset} has not expected type (${type} expected)`);
 
     this.name = this.constructor.name;
     this.key = key;
