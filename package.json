@@ -41,6 +41,11 @@
     "ts-jest": "^26.0.0",
     "typescript": "^3.9.0"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "./src/*.{js,ts}": [
       "yarn format",
