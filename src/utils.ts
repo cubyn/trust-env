@@ -1,11 +1,10 @@
-import isJs from 'is_js';
+import isJs from './custom-types';
 import { ContractNotFoundError } from './errors/contract-not-found-error';
 import { EntryNotUniqueError } from './errors/entry-not-unique-error';
 import { EntryKeyNotFoundError } from './errors/entry-key-not-found-error';
 import { EntryTypeNotFoundError } from './errors/entry-type-not-found-error';
 import { EntryValidatorNotSucceededError } from './errors/entry-validator-not-succeeded-error';
 import { Contract, Entry, CastType, EntryKey, Variables } from './types';
-import './custom-types';
 
 const assertEntriesPresence = (contract: Contract) => {
   if (isJs.not.existy(contract) || isJs.empty(contract)) {

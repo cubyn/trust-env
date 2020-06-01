@@ -141,20 +141,19 @@ env.config([
 
 TODO
 
-- Add examples of variable casting
 - Verify the `process.env` is used once and cached
 - Throw and Error best practices in TS
 - Test type cast (JSON, date, etc)
 - Test "required"
 - Give a type make it required? No (e.g: type null or undefined)
-- default as function
+- preset as function
 - Required is not compatible with several types (e.g: null or undefined)
 - Issue: when validator is used instead of type, no cast done
 
 value:
 
 - process.env
-- else default if exists
+- else preset if exists
 - then cast composed type or scalar
 - then transform if exists
 

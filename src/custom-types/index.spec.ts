@@ -1,19 +1,19 @@
-import isJs from 'is_js';
+import isJs from '.';
 import '.';
 
 describe('types', () => {
   describe('stringsArray', () => {
-    it('should exists', () => {
+    it('should be a function', () => {
       expect(isJs.stringsArray).toEqual(expect.any(Function));
     });
 
     it('should supports native API', () => {
       expect(isJs.not.stringsArray('abc')).toBe(true);
       expect(isJs.not.stringsArray(['a'])).toBe(false);
-      expect(isJs.all.stringsArray([1], 'a')).toBe(false);
+      expect(isJs.all.stringsArray([[1], 'a'])).toBe(false);
       expect(isJs.all.stringsArray([['a'], ['b']])).toBe(true);
       expect(isJs.any.stringsArray([['1', '2'], '1'])).toBe(true);
-      expect(isJs.any.stringsArray('1', 2)).toBe(false);
+      expect(isJs.any.stringsArray(['1', 2])).toBe(false);
     });
 
     describe('when the payload is an array of strings', () => {
@@ -33,17 +33,17 @@ describe('types', () => {
   });
 
   describe('integersArray', () => {
-    it('should exists', () => {
+    it('should be a function', () => {
       expect(isJs.integersArray).toEqual(expect.any(Function));
     });
 
     it('should supports native API', () => {
       expect(isJs.not.integersArray('abc')).toBe(true);
       expect(isJs.not.integersArray([1])).toBe(false);
-      expect(isJs.all.integersArray([1], '1')).toBe(false);
+      expect(isJs.all.integersArray([[1], '1'])).toBe(false);
       expect(isJs.all.integersArray([[1], [2]])).toBe(true);
       expect(isJs.any.integersArray([[1, 2], '1'])).toBe(true);
-      expect(isJs.any.integersArray('1', 2)).toBe(false);
+      expect(isJs.any.integersArray(['1', 2])).toBe(false);
     });
 
     describe('when the payload is an array of integers', () => {
@@ -65,17 +65,17 @@ describe('types', () => {
   });
 
   describe('numbersArray', () => {
-    it('should exists', () => {
+    it('should be a function', () => {
       expect(isJs.numbersArray).toEqual(expect.any(Function));
     });
 
     it('should supports native API', () => {
       expect(isJs.not.numbersArray('abc')).toBe(true);
       expect(isJs.not.numbersArray([1.1])).toBe(false);
-      expect(isJs.all.numbersArray([1.1], '1')).toBe(false);
+      expect(isJs.all.numbersArray([[1.1], '1'])).toBe(false);
       expect(isJs.all.numbersArray([[1.1], [2.3]])).toBe(true);
       expect(isJs.any.numbersArray([[1.1, 2.2], '1'])).toBe(true);
-      expect(isJs.any.numbersArray('1', 2)).toBe(false);
+      expect(isJs.any.numbersArray(['1', 2])).toBe(false);
     });
 
     describe('when the payload is an array of numbers', () => {
