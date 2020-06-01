@@ -32,12 +32,20 @@
     "eslint-plugin-jest": "^23.13.0",
     "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-unicorn": "^20.0.0",
+    "husky": "^4.0.0",
     "jest": "^26.0.0",
     "jest-junit": "^10.0.0",
+    "lint-staged": "^10.0.0",
     "nodemon": "^2.0.0",
     "prettier": "^2.0.0",
     "ts-jest": "^26.0.0",
     "typescript": "^3.9.0"
+  },
+  "lint-staged": {
+    "./src/*.{js,ts}": [
+      "yarn format",
+      "yarn lint"
+    ]
   },
   "keywords": [
     "env",
