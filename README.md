@@ -134,9 +134,3 @@ env.config([
   },
 ]);
 ```
-
-## TODO
-
-- Lint errors are not shown
-- `preset` as function
-- Publish on NPM (TS config)
