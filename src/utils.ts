@@ -2,10 +2,11 @@ import isJs from './custom-types';
 import { ContractNotFoundError } from './errors/contract-not-found-error';
 import { EntryKeyNotFoundError } from './errors/entry-key-not-found-error';
 import { EntryNotUniqueError } from './errors/entry-not-unique-error';
+import { EntryPresetTypeNotValidError } from './errors/entry-preset-type-not-valid-error';
 import { EntryTypeNotFoundError } from './errors/entry-type-not-found-error';
 import { EntryValidatorNotSucceededError } from './errors/entry-validator-not-succeeded-error';
 import { EntryValueNotFoundError } from './errors/entry-value-not-found-error';
-import { Contract, Entry, CastType, EntryKey, Variables, Options } from './types';
+import { Contract, CastType, EntryKey, Variables, Options } from './types';
 
 const assertEntriesPresence = (contract: Contract) => {
   if (isJs.not.existy(contract) || isJs.empty(contract)) {
@@ -28,22 +29,6 @@ const assertEntriesUnicity = (contract: Contract) => {
     throw new EntryNotUniqueError(contract, duplicates);
   }
 };
-
-// const assertTypeValue = (entry, value) => {
-//   const { type } = entry;
-
-//   if (isJs.not[type](value)) {
-//     throw new EntryNotValidError(entry);
-//   }
-// };
-
-const sanitizeEntry = (entry: Entry): Entry => ({
-  key: entry.key,
-  type: entry.type,
-  preset: entry.preset,
-  validator: entry.validator,
-  transform: entry.transform,
-});
 
 const castToType = (value: string, type: CastType) => {
   switch (type) {
@@ -82,6 +67,10 @@ const extractEnvVariables = (contract: Contract, options: Options) =>
       throw new EntryTypeNotFoundError(entry);
     }
 
+    if (preset && isJs.not.sameType(type, preset)) {
+      throw new EntryPresetTypeNotValidError(entry);
+    }
+
     let rawValue = process.env[key];
 
     if (!rawValue) {
@@ -113,4 +102,4 @@ const extractEnvVariables = (contract: Contract, options: Options) =>
     return acc;
   }, {} as Variables);
 
-export { assertEntriesUnicity, assertEntriesPresence, sanitizeEntry, extractEnvVariables };
+export { assertEntriesUnicity, assertEntriesPresence, extractEnvVariables };

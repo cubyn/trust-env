@@ -1,17 +1,13 @@
-import { EntryKey, EntryPreset } from '../types';
+import { Entry } from '../types';
 
 export class EntryPresetTypeNotValidError extends Error {
-  key: EntryKey;
-  preset: EntryPreset;
-  type: string;
+  entry: Entry;
 
-  constructor(key: EntryKey, preset: EntryPreset, type: string) {
-    super(`Entry ${key} with preset ${preset} has not the expected type ${type}`);
+  constructor(entry: Entry) {
+    super(`Entry ${entry.key} with preset ${entry.preset} has not the expected type ${entry.type}`);
 
     this.name = this.constructor.name;
-    this.key = key;
-    this.preset = preset;
-    this.type = type;
+    this.entry = entry;
 
     Error.captureStackTrace(this, this.constructor);
   }

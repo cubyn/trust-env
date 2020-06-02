@@ -96,7 +96,9 @@ An entry in the contract:
     - `numbersArray`
     - `string`
     - `stringsArray`
-- `preset`: (_optional_) value if `process.env` variable is not found
+- `preset`: (_optional_)
+  - value if `process.env` variable is not found
+  - must be the same type as `type`
 - `transform`: (_optional_) function to transform the cast variable
 - `validator`: (_optional_) function to validate the cast and transformed variable
 
@@ -135,26 +137,6 @@ env.config([
 
 ## TODO
 
-- `sanitizeEntry` still required with TS?
 - Lint errors are not shown
 - `preset` as function
-- Issue: when validator is used instead of type, no cast done
-
-when the `type` is validated? NEVER
-
-- then validate if exists
-
-- `type` must be scalar
-- value is cast with type
-- value is validated by `type`
-- value is validated by validator for more complex type is required (e.g: IP)
-
-{
-key: 'DB_USER',
-type: 'integer',
-}
-would give { DB_USER: 0 }, validated as integer so no error thrown
-
-SO: CANNOT USE type TO VALIDATE value SINCE IT'S NOT POSSIBLE TO GUESS THE RAW
-PROCESS.ENV TYPE
-SO: TYPE IS ONLY USED FOR CAST
+- Publish on NPM (TS config)

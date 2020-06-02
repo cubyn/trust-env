@@ -1,16 +1,10 @@
-import {
-  assertEntriesPresence,
-  assertEntriesUnicity,
-  sanitizeEntry,
-  extractEnvVariables,
-} from './utils';
+import { assertEntriesPresence, assertEntriesUnicity, extractEnvVariables } from './utils';
 import { Contract, TrustEnvLib, Variables, Options } from './types';
 
 const config = (contract: Contract, options: Options = { strict: true }): TrustEnvLib => {
   assertEntriesPresence(contract);
   assertEntriesUnicity(contract);
-  const CONTRACT = contract.map(sanitizeEntry);
-  const VARIABLES = extractEnvVariables(CONTRACT, options);
+  const VARIABLES = extractEnvVariables(contract, options);
 
   return {
     get: get(VARIABLES),
