@@ -1,6 +1,6 @@
 {
   "name": "trust-env",
-  "version": "1.4.1",
+  "version": "1.4.0",
   "description": "Make process.env usage safe",
   "main": "dist/index.js",
   "types": "dist/types.d.ts",
@@ -20,15 +20,15 @@
     "prepublishOnly": "yarn run build"
   },
   "dependencies": {
+    "@types/is": "^0.0.21",
     "is_js": "^0.9.0"
   },
   "devDependencies": {
-    "@types/is": "^0.0.21",
     "@types/jest": "^25.0.0",
     "@types/node": "^14.0.0",
     "@typescript-eslint/eslint-plugin": "^3.0.0",
     "@typescript-eslint/parser": "^3.0.0",
-    "del-cli": "^3.0.1",
+    "del-cli": "^3.0.0",
     "eslint": "^7.0.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.11.0",
