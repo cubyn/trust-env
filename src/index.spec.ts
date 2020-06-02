@@ -12,7 +12,7 @@ describe('src/index.ts', () => {
     process.env.DEFAULT_USER = '{"name": "Foo"}';
   });
 
-  it('works', () => {
+  it('should work', () => {
     const contract: Contract = [
       {
         key: 'API_URL',

@@ -56,6 +56,17 @@ import { MYSQL_HOST, MYSQL_PORT, DEFAULT_USER } from './env';
 // ...
 ```
 
+```ts
+// src/anywhere-2.ts
+
+import env from './env';
+
+const MYSQL_VARIABLES = env.getPrefix('MYSQL');
+const DEFAULT_USER = env.get('DEFAULT_USER');
+
+// ...
+```
+
 Make the following "top of file" validations deprecated:
 
 ```ts
@@ -145,10 +156,8 @@ env.config([
 
 ## TODO
 
-- `get` and `getPrefix` in README
-- Test internal functions
+- `sanitizeEntry` still required with TS?
 - Lint errors are not shown
-- Test type cast (JSON, date, etc)
 - preset as function
 - Issue: when validator is used instead of type, no cast done
 
