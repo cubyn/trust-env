@@ -16,7 +16,8 @@
     "test:watch": "jest --watch",
     "test:cover": "jest --coverage",
     "lint": "./node_modules/.bin/eslint src --ext .ts",
-    "format": "./node_modules/.bin/prettier --write 'src/**/*.ts'"
+    "format": "./node_modules/.bin/prettier --write 'src/**/*.ts'",
+    "prepublishOnly": "yarn run build"
   },
   "dependencies": {
     "is_js": "^0.9.0"
