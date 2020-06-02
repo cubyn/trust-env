@@ -1,6 +1,8 @@
 import { EntryKey } from '../types';
 
 export class ResultNotFoundError extends Error {
+  key: EntryKey;
+
   constructor(key: EntryKey) {
     super(`process.env.${key} not found and no preset given`);
 

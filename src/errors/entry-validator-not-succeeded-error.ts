@@ -1,6 +1,8 @@
 import { Entry } from '../types';
 
 export class EntryValidatorNotSucceededError extends Error {
+  entry: Entry;
+
   constructor(entry: Entry) {
     super(`Entry validator not succeeded: ${JSON.stringify(entry, null, 2)}`);
 

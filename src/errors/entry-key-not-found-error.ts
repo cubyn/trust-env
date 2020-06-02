@@ -1,8 +1,10 @@
 import { Entry } from '../types';
 
 export class EntryKeyNotFoundError extends Error {
+  entry: Entry;
+
   constructor(entry: Entry) {
-    super(`Entry key not found: ${JSON.stringify(entry, null, 2)}`);
+    super(`Key not found in entry: ${JSON.stringify(entry, null, 2)}`);
 
     this.name = this.constructor.name;
     this.entry = entry;

@@ -1,10 +1,11 @@
 import isJs from './custom-types';
 import { ContractNotFoundError } from './errors/contract-not-found-error';
-import { EntryNotUniqueError } from './errors/entry-not-unique-error';
 import { EntryKeyNotFoundError } from './errors/entry-key-not-found-error';
+import { EntryNotUniqueError } from './errors/entry-not-unique-error';
 import { EntryTypeNotFoundError } from './errors/entry-type-not-found-error';
 import { EntryValidatorNotSucceededError } from './errors/entry-validator-not-succeeded-error';
-import { Contract, Entry, CastType, EntryKey, Variables } from './types';
+import { EntryValueNotFoundError } from './errors/entry-value-not-found-error';
+import { Contract, Entry, CastType, EntryKey, Variables, Options } from './types';
 
 const assertEntriesPresence = (contract: Contract) => {
   if (isJs.not.existy(contract) || isJs.empty(contract)) {
@@ -69,7 +70,7 @@ const castToType = (value: string, type: CastType) => {
   }
 };
 
-const extractEnvVariables = (contract: Contract) =>
+const extractEnvVariables = (contract: Contract, options: Options) =>
   contract.reduce((acc, entry) => {
     const { key, type, preset, transform, validator } = entry;
 
@@ -84,14 +85,18 @@ const extractEnvVariables = (contract: Contract) =>
     let rawValue = process.env[key];
 
     if (!rawValue) {
+      if (options.strict) {
+        throw new EntryValueNotFoundError(entry);
+      }
+
       if (preset) {
         rawValue = preset;
       } else {
-        throw new Error(`process.env.${key} not found and no preset given`);
+        throw new EntryValueNotFoundError(entry);
       }
     }
 
-    let value = castToType(rawValue, type);
+    let value = castToType(rawValue as string, type);
 
     if (transform) {
       value = transform({ value, entry, contract, isJs });

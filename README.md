@@ -1,6 +1,6 @@
 # trust-env
 
-Validate process.env variables againt a contract for safer use.
+Validate `process.env` variables against a contract for safer use.
 
 Fails at runtime if contract requirements are not met.
 
@@ -18,7 +18,7 @@ $ yarn add trust-env
 import dotenv from 'dotenv';
 import TrustEnv from 'trust-env';
 
-// Or whatever the way env variables are injected
+// Or whatever the way env variables are injected in Node process
 dotenv.config();
 
 // Contract for declaring and validating variables to be used
@@ -58,28 +58,27 @@ import { MYSQL_HOST, MYSQL_PORT, DEFAULT_USER } from './env';
 
 Make the following "top of file" validations deprecated:
 
-```js
-// src/function.js
+```ts
+// src/function.ts
 
-assert(process.env.MY_ENV_VAR, Error, 'Missing env var [MY_ENV_VAR]');
-
-async function handler({ data }) {
-  // ...
-}
+assert(process.env.MYSQL_HOST, Error, 'Missing env var [MYSQL_HOST]');
 
 // ...
 ```
 
 ## Features
 
-- Caches `process.env` variables to work only with them (if `process.env` is updated after runtime, these changes will have no effect)
-- Add an entry in contract:
+- Caches `process.env` variables to work only with them (if `process.env` is updated, these changes will have no effect)
+- An entry in contract:
   - `key`: name of the variable to look for in `process.env`
   - `type`: cast the `process.env` variable
-  - `preset`: value if `process.env` variable is not found
-  - `required`: whether the value must be found
-  - `validator`: function to validate the `process.env` variable
-  - `transform`: function to transform the `process.env` variable
+  - `preset`: (optional) value if `process.env` variable is not found
+  - `validator`: (optional) function to validate the casted variable
+  - `transform`: (optional) function to transform the casted variable
+- Global options:
+  - `strict`: (default: `true`) if the `process.env` variable is not found
+    - `true`: throws an error
+    - `false`: use `preset` (throws an error if there is no `preset`)
 
 ### Type checks
 
@@ -127,6 +126,7 @@ env.config([
 env.config([
   {
     key: 'MYSQL_HOST',
+    type: 'string',
     validator: ({ value }) => value.startsWith('__'),
   },
 ]);
@@ -145,23 +145,12 @@ env.config([
 
 ## TODO
 
-TODO
-
-- Verify the `process.env` is used once and cached
-- Throw and Error best practices in TS
+- `get` and `getPrefix` in README
+- Test internal functions
+- Lint errors are not shown
 - Test type cast (JSON, date, etc)
-- Test "required"
-- Give a type make it required? No (e.g: type null or undefined)
 - preset as function
-- Required is not compatible with several types (e.g: null or undefined)
 - Issue: when validator is used instead of type, no cast done
-
-value:
-
-- process.env
-- else preset if exists
-- then cast composed type or scalar
-- then transform if exists
 
 when the `type` is validated? NEVER
 

@@ -1,5 +1,10 @@
-module.exports = class EntryNotFoundError extends Error {
-  constructor(contract, key) {
+import { Contract, EntryKey } from '../types';
+
+export class EntryNotFoundError extends Error {
+  contract: Contract;
+  key: EntryKey;
+
+  constructor(contract: Contract, key: EntryKey) {
     super(`Entry with key: ${key} not found`);
 
     this.name = this.constructor.name;
@@ -8,4 +13,4 @@ module.exports = class EntryNotFoundError extends Error {
 
     Error.captureStackTrace(this, this.constructor);
   }
-};
+}

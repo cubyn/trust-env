@@ -1,6 +1,8 @@
 import { Entry } from '../types';
 
 export class EntryNotValidError extends Error {
+  entry: Entry;
+
   constructor(entry: Entry) {
     super(`Entry not valid: ${JSON.stringify(entry, null, 2)}`);
 

@@ -46,18 +46,17 @@ describe('src/index.ts', () => {
 
     const env = TrustEnv(contract);
 
-    process.env.API_TOKEN = null;
+    process.env.API_TOKEN = undefined;
 
     expect(env).toEqual({
+      get: expect.any(Function),
+      getPrefix: expect.any(Function),
       API_URL: 'https://endpoint-a.pi/v3',
       API_TOKEN: '0%f_a+cVF3',
       PRICES_RANGE: [0.01, 9999.99],
       POSSIBLES_ALGORITHMS: ['RSA', 'AES', 'BLOWFISH'],
       LIMIT_DATE: new Date('1/1/2020'),
       DEFAULT_USER: { name: 'Foo' },
-      get: expect.any(Function),
-      getPrefix: expect.any(Function),
-      config: expect.any(Function),
     });
     expect(env.getPrefix('API')).toEqual({
       API_URL: 'https://endpoint-a.pi/v3',
