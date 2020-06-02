@@ -2,7 +2,6 @@ import isJs from './custom-types';
 import { ContractNotFoundError } from './errors/contract-not-found-error';
 import { EntryKeyNotFoundError } from './errors/entry-key-not-found-error';
 import { EntryNotUniqueError } from './errors/entry-not-unique-error';
-import { EntryPresetTypeNotValidError } from './errors/entry-preset-type-not-valid-error';
 import { EntryTypeNotFoundError } from './errors/entry-type-not-found-error';
 import { EntryValidatorNotSucceededError } from './errors/entry-validator-not-succeeded-error';
 import { EntryValueNotFoundError } from './errors/entry-value-not-found-error';
@@ -65,10 +64,6 @@ const extractEnvVariables = (contract: Contract, options: Options) =>
 
     if (isJs.falsy(type)) {
       throw new EntryTypeNotFoundError(entry);
-    }
-
-    if (preset && isJs.not.sameType(type, preset)) {
-      throw new EntryPresetTypeNotValidError(entry);
     }
 
     let rawValue = process.env[key];

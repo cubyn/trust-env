@@ -3,7 +3,6 @@
 import { ContractNotFoundError } from './errors/contract-not-found-error';
 import { EntryNotUniqueError } from './errors/entry-not-unique-error';
 import { EntryNotValidError } from './errors/entry-not-valid-error';
-import { EntryPresetTypeNotValidError } from './errors/entry-preset-type-not-valid-error';
 import { EntryValidatorNotSucceededError } from './errors/entry-validator-not-succeeded-error';
 import { EntryValueNotFoundError } from './errors/entry-value-not-found-error';
 import { Contract } from './types';
@@ -142,20 +141,6 @@ describe('#config', () => {
         ];
 
         expect(() => TrustEnv(contract)).not.toThrow(EntryNotValidError);
-      });
-    });
-
-    describe('when the type of the preset is not the same as the type property', () => {
-      it('should throws with EntryPresetTypeNotValidError', () => {
-        const contract: Contract = [
-          {
-            key: 'MYSQL_HOST',
-            type: 'string',
-            preset: 1,
-          },
-        ];
-
-        expect(() => TrustEnv(contract)).toThrow(EntryPresetTypeNotValidError);
       });
     });
   });

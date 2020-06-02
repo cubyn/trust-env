@@ -98,7 +98,7 @@ An entry in the contract:
     - `stringsArray`
 - `preset`: (_optional_)
   - value if `process.env` variable is not found
-  - must be the same type as `type`
+  - doesn't have to be the same type as `type`
 - `transform`: (_optional_) function to transform the cast variable
 - `validator`: (_optional_) function to validate the cast and transformed variable
 
