@@ -1,5 +1,9 @@
-module.exports = class EntryValidatorNotSucceededError extends Error {
-  constructor(entry) {
+import { Entry } from '../types';
+
+export class EntryValidatorNotSucceededError extends Error {
+  entry: Entry;
+
+  constructor(entry: Entry) {
     super(`Entry validator not succeeded: ${JSON.stringify(entry, null, 2)}`);
 
     this.name = this.constructor.name;
@@ -7,4 +11,4 @@ module.exports = class EntryValidatorNotSucceededError extends Error {
 
     Error.captureStackTrace(this, this.constructor);
   }
-};
+}

@@ -1,5 +1,9 @@
-module.exports = class EntryNotValidError extends Error {
-  constructor(entry) {
+import { Entry } from '../types';
+
+export class EntryNotValidError extends Error {
+  entry: Entry;
+
+  constructor(entry: Entry) {
     super(`Entry not valid: ${JSON.stringify(entry, null, 2)}`);
 
     this.name = this.constructor.name;
@@ -7,4 +11,4 @@ module.exports = class EntryNotValidError extends Error {
 
     Error.captureStackTrace(this, this.constructor);
   }
-};
+}

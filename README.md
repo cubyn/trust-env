@@ -1,6 +1,6 @@
 # trust-env
 
-Makes the usage of process.env variables more secure by validating them againt a contract.
+Validate `process.env` variables against a contract for safer use.
 
 Fails at runtime if contract requirements are not met.
 
@@ -12,21 +12,25 @@ $ yarn add trust-env
 
 ## Usage
 
-```js
-// src/drivers/env.js
+```ts
+// src/env.ts
 
-const env = require('trust-env');
+import dotenv from 'dotenv';
+import TrustEnv from 'trust-env';
 
-// Contract for declaring and validating used variables
-module.exports = env.config([
+// Or whatever the way env variables are injected in Node process
+dotenv.config();
+
+// Contract for declaring and validating variables to be used
+exports default TrustEnv([
   {
-    key: 'DB_HOST',
+    key: 'MYSQL_HOST',
     type: 'string',
   },
   {
-    key: 'DB_PORT',
+    key: 'MYSQL_PORT',
     type: 'number',
-    default: 3306,
+    preset: 3306,
   },
   {
     key: 'DEFAULT_USER',
@@ -36,102 +40,96 @@ module.exports = env.config([
 ]);
 ```
 
-```js
-// src/index.js
+```ts
+// src/index.ts
 
-// Or whatever the way env variables are injected
-require('dotenv').config();
-require('./drivers/env');
+import './env';
 
 // ...
 ```
 
-```js
-// src/anywhere.js
+```ts
+// src/anywhere.ts
 
-const { DB_HOST, DB_PORT, DEFAULT_USER } = require('../drivers/env');
+import { MYSQL_HOST, MYSQL_PORT, DEFAULT_USER } from './env';
+
+// ...
+```
+
+```ts
+// src/anywhere-2.ts
+
+import env from './env';
+
+const MYSQL_VARIABLES = env.getPrefix('MYSQL');
+const DEFAULT_USER = env.get('DEFAULT_USER');
 
 // ...
 ```
 
 Make the following "top of file" validations deprecated:
 
-```js
-// src/function.js
+```ts
+// src/function.ts
 
-assert(process.env.MY_ENV_VAR, Error, 'Missing env var [MY_ENV_VAR]');
-
-async function handler({ data }) {
-  // ...
-}
+assert(process.env.MYSQL_HOST, Error, 'Missing env var [MYSQL_HOST]');
 
 // ...
 ```
 
-## Documentation
+## Features
 
-### Features
+Caches `process.env` variables to work only with them (if `process.env` is updated, these changes will have no effect)
 
-* Cache process.env variables and only works with these ones (avoid process.env update after runtime)
-* Declare an entry in contract with the following:
-  * `key`: the name of the variable to search in process.env
-  * `type`: to cast process.env variable
-  * `default`: value if process.env variable is not found
-  * `required`: whether a value must be found
-  * `validator`: function to validate the process.env variable
-  * `transform`: function to validate the process.env variable
+An entry in the contract:
 
-### Type checks
+- `key`: name of the variable to look for in `process.env`
+- `type`:
+  - cast the actual `process.env` variable
+  - supported:
+    - `boolean`
+    - `date`
+    - `integer`
+    - `integersArray`
+    - `json`
+    - `number`
+    - `numbersArray`
+    - `string`
+    - `stringsArray`
+- `preset`: (_optional_)
+  - value if `process.env` variable is not found
+  - must be the same type as `type`
+- `transform`: (_optional_) function to transform the cast variable
+- `validator`: (_optional_) function to validate the cast and transformed variable
 
-The `type` can be:
+Global options:
 
-* `stringsArray`
-* `integersArray`
-* `numbersArray`
-* `string`
-* `integer`
-* `number`
-* `boolean`
-* `date`
-* `json`
-
-### Default value
-
-Even with the default value, the variable must still exist in process.env.
-This avoids a "fake configuration", which is based only on the contract.
-
-```js
-env.config([
-  {
-    // process.env.THROTTLE_MS is not defined
-    key: 'THROTTLE_MS',
-    type: 'integer',
-    default: 1000,
-  },
-]);
-```
+- `strict`: (_default: `true`_) if the `process.env` variable is not found
+  - `true`: throws an error
+  - `false`: use `preset` (throws an error if there is no `preset`)
 
 ### Transform
 
-* Params
-  * `value`: the actual process.env value (`type` applied, `default` applied if `value` is not found and `transform` applied if exists)
-  * `entry`: the current entry to be validated
-  * `contract`: the whole contract declaration
-  * `isJs`
+- Params:
+  - `value`: the cast `process.env` value
+  - `entry`: the current entry to be validated
+  - `contract`: the whole contract
+  - `isJs` library
 
 ### Validator
 
-* Must returns a truthy to validate entry
-* Params
-  * `value`: the actual process.env value (`type` applied, `default` applied if `value` is not found and `transform` applied if exists)
-  * `entry`: the current entry to be validated
-  * `contract`: the whole contract declaration
-  * `isJs`
+- Returns a boolean to validate the `process.env` value
+- Params:
+  - `value`: the cast and transformed `process.env` value
+  - `entry`: the current entry to be validated
+  - `contract`: the whole contract
+  - `isJs` library
 
 ```js
 env.config([
   {
-    key: 'DB_HOST',
+    key: 'MYSQL_HOST',
+    type: 'string',
     validator: ({ value }) => value.startsWith('__'),
   },
 ]);

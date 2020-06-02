@@ -1,7 +1,6 @@
-.env*
-!.env.tpl
-.DS_Store
 *.log
-node_modules/
+.DS_Store
 coverage/
+dist/
 junit.xml
+node_modules/
