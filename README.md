@@ -79,56 +79,46 @@ assert(process.env.MYSQL_HOST, Error, 'Missing env var [MYSQL_HOST]');
 
 ## Features
 
-- Caches `process.env` variables to work only with them (if `process.env` is updated, these changes will have no effect)
-- An entry in contract:
-  - `key`: name of the variable to look for in `process.env`
-  - `type`: cast the `process.env` variable
-  - `preset`: (optional) value if `process.env` variable is not found
-  - `validator`: (optional) function to validate the casted variable
-  - `transform`: (optional) function to transform the casted variable
-- Global options:
-  - `strict`: (default: `true`) if the `process.env` variable is not found
-    - `true`: throws an error
-    - `false`: use `preset` (throws an error if there is no `preset`)
+Caches `process.env` variables to work only with them (if `process.env` is updated, these changes will have no effect)
 
-### Type checks
+An entry in the contract:
 
-Supported `type`:
+- `key`: name of the variable to look for in `process.env`
+- `type`:
+  - cast the actual `process.env` variable
+  - supported:
+    - `boolean`
+    - `date`
+    - `integer`
+    - `integersArray`
+    - `json`
+    - `number`
+    - `numbersArray`
+    - `string`
+    - `stringsArray`
+- `preset`: (_optional_) value if `process.env` variable is not found
+- `transform`: (_optional_) function to transform the cast variable
+- `validator`: (_optional_) function to validate the cast and transformed variable
 
-- `boolean`
-- `date`
-- `integer`
-- `integersArray`
-- `json`
-- `number`
-- `numbersArray`
-- `string`
-- `stringsArray`
+Global options:
 
-### preset value
+- `strict`: (_default: `true`_) if the `process.env` variable is not found
+  - `true`: throws an error
+  - `false`: use `preset` (throws an error if there is no `preset`)
 
-Even with the preset value, the variable must still exist in `process.env`.
-This avoids a "shadow configuration", which is only based on the contract.
+### Transform
 
-```ts
-env.config([
-  {
-    // process.env.THROTTLE_MS is not defined
-    key: 'THROTTLE_MS',
-    type: 'integer',
-    preset: 1000,
-  },
-]);
-```
+- Params:
+  - `value`: the cast `process.env` value
+  - `entry`: the current entry to be validated
+  - `contract`: the whole contract
+  - `isJs` library
 
 ### Validator
 
-- Returns a boolean to validate the entry
+- Returns a boolean to validate the `process.env` value
 - Params:
-  - `value`: the actual `process.env` value
-    - `type` casting applied,
-    - `preset` applied if `value` is not found
-    - `transform` applied if exists
+  - `value`: the cast and transformed `process.env` value
   - `entry`: the current entry to be validated
   - `contract`: the whole contract
   - `isJs` library
@@ -143,22 +133,11 @@ env.config([
 ]);
 ```
 
-### Transform
-
-- Params:
-  - `value`: the actual `process.env` value
-    - `type` casting applied,
-    - `preset` applied if `value` is not found
-    - `transform` applied if exists
-  - `entry`: the current entry to be validated
-  - `contract`: the whole contract
-  - `isJs` library
-
 ## TODO
 
 - `sanitizeEntry` still required with TS?
 - Lint errors are not shown
-- preset as function
+- `preset` as function
 - Issue: when validator is used instead of type, no cast done
 
 when the `type` is validated? NEVER
@@ -166,7 +145,7 @@ when the `type` is validated? NEVER
 - then validate if exists
 
 - `type` must be scalar
-- value is casted with type
+- value is cast with type
 - value is validated by `type`
 - value is validated by validator for more complex type is required (e.g: IP)
 
