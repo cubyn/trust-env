@@ -1,4 +1,4 @@
-module.exports = class ContractNotFoundError extends Error {
+export class ContractNotFoundError extends Error {
   constructor() {
     super('Contract not found');
 
@@ -6,4 +6,4 @@ module.exports = class ContractNotFoundError extends Error {
 
     Error.captureStackTrace(this, this.constructor);
   }
-};
+}
