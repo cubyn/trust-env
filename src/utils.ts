@@ -51,7 +51,7 @@ const castToType = (value: string, type: CastType) => {
     case 'json':
       return JSON.parse(value);
     default:
-      throw new Error();
+      throw new Error(`Cannot cast ${value} into ${type}`);
   }
 };
 
