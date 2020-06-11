@@ -22,7 +22,7 @@ import TrustEnv from 'trust-env';
 dotenv.config();
 
 // Contract for declaring and validating variables to be used
-exports default TrustEnv([
+export default TrustEnv([
   {
     key: 'MYSQL_HOST',
     type: 'string',
