@@ -1,6 +1,6 @@
 {
   "name": "trust-env",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Make process.env usage safe",
   "main": "dist/index.js",
   "types": "dist/types.d.ts",
