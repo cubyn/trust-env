@@ -22,7 +22,7 @@ import TrustEnv from 'trust-env';
 dotenv.config();
 
 // Contract for declaring and validating variables to be used
-exports default TrustEnv([
+export default TrustEnv([
   {
     key: 'MYSQL_HOST',
     type: 'string',
@@ -51,18 +51,11 @@ import './env';
 ```ts
 // src/anywhere.ts
 
-import { MYSQL_HOST, MYSQL_PORT, DEFAULT_USER } from './env';
-
-// ...
-```
-
-```ts
-// src/anywhere-2.ts
-
 import env from './env';
 
-const MYSQL_VARIABLES = env.getPrefix('MYSQL');
+const { MYSQL_PORT } = env;
 const DEFAULT_USER = env.get('DEFAULT_USER');
+const MYSQL_VARIABLES = env.getPrefix('MYSQL');
 
 // ...
 ```
@@ -126,7 +119,7 @@ Global options:
   - `isJs` library
 
 ```js
-env.config([
+TrustEnv([
   {
     key: 'MYSQL_HOST',
     type: 'string',

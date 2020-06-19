@@ -1,4 +1,8 @@
-export type TrustEnvLib = {
+export type Variables = {
+  [key: string]: any;
+};
+
+export type TrustEnvLib = Variables & {
   get: any;
   getPrefix: any;
 };
@@ -37,8 +41,4 @@ export type Contract = Entry[];
 
 export type Options = {
   strict: boolean;
-};
-
-export type Variables = {
-  [key: string]: any;
 };
