@@ -119,7 +119,7 @@ Global options:
   - `isJs` library
 
 ```js
-env.config([
+TrustEnv([
   {
     key: 'MYSQL_HOST',
     type: 'string',
