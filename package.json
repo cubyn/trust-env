@@ -24,8 +24,8 @@
     "is_js": "^0.9.0"
   },
   "devDependencies": {
-    "@types/jest": "^25.0.0",
-    "@types/node": "^14.0.0",
+    "@types/jest": "latest",
+    "@types/node": "latest",
     "@typescript-eslint/eslint-plugin": "^3.0.0",
     "@typescript-eslint/parser": "^3.0.0",
     "del-cli": "^3.0.0",
@@ -38,7 +38,6 @@
     "eslint-plugin-unicorn": "^20.0.0",
     "husky": "^4.0.0",
     "jest": "^26.0.0",
-    "jest-junit": "^10.0.0",
     "lint-staged": "^10.0.0",
     "nodemon": "^2.0.0",
     "prettier": "^2.0.0",
