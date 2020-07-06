@@ -48,7 +48,14 @@ const castToType = (value: string, type: CastType) => {
     case 'number':
       return parseFloat(value);
     case 'boolean':
-      return Boolean(value);
+      if (value === 'false') {
+        return false;
+      }
+
+      if (value === 'true') {
+        return true;
+      }
+      break;
     case 'date':
       return new Date(value);
     case 'json':

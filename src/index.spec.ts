@@ -5,6 +5,7 @@ describe('src/index.ts', () => {
   beforeEach(() => {
     process.env.API_URL = 'https://endpoint-a.pi/v3';
     process.env.API_TOKEN = '0%f_a+cVF3';
+    process.env.API_SSL = 'false';
     process.env.PRICES_RANGE = '0.01,9999.99';
     process.env.POSSIBLES_ALGORITHMS = 'RSA,aes,Blowfish';
     process.env.DISABLED_USERS_PID = '321,987,654';
@@ -22,6 +23,10 @@ describe('src/index.ts', () => {
       {
         key: 'API_TOKEN',
         type: 'string',
+      },
+      {
+        key: 'API_SSL',
+        type: 'boolean',
       },
       {
         key: 'PRICES_RANGE',
@@ -58,14 +63,17 @@ describe('src/index.ts', () => {
       getPrefix: expect.any(Function),
       API_URL: 'https://endpoint-a.pi/v3',
       API_TOKEN: '0%f_a+cVF3',
+      API_SSL: false,
       PRICES_RANGE: [0.01, 9999.99],
       POSSIBLES_ALGORITHMS: ['RSA', 'AES', 'BLOWFISH'],
       LIMIT_DATE: new Date('1/1/2020'),
       DEFAULT_USER: { name: 'Foo' },
+      ROOT_PASSWORD: undefined,
     });
     expect(env.getPrefix('API')).toEqual({
       API_URL: 'https://endpoint-a.pi/v3',
       API_TOKEN: '0%f_a+cVF3',
+      API_SSL: false,
     });
     expect(env.get('DISABLED_USERS_PID')).toBeUndefined();
     expect(env.get('THROTTLE_MS')).toBeUndefined();
