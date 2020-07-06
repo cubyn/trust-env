@@ -29,8 +29,13 @@ export default TrustEnv([
   },
   {
     key: 'MYSQL_PORT',
+    // Cast process.env.MYSQL_PORT into number
     type: 'number',
-    preset: 3306,
+  },
+  {
+    key: 'MYSQL_PASSWORD',
+    // Allow process.env.MYSQL_PASSWORD to be undefined
+    required: false,
   },
   {
     key: 'DEFAULT_USER',
@@ -53,6 +58,7 @@ import './env';
 
 import env from './env';
 
+// Access to variables
 const { MYSQL_PORT } = env;
 const DEFAULT_USER = env.get('DEFAULT_USER');
 const MYSQL_VARIABLES = env.getPrefix('MYSQL');
@@ -72,7 +78,7 @@ assert(process.env.MYSQL_HOST, Error, 'Missing env var [MYSQL_HOST]');
 
 ## Features
 
-Caches `process.env` variables to work only with them (if `process.env` is updated, these changes will have no effect)
+Caches `process.env` variables to work only with it (if `process.env` is updated, changes will have no effect)
 
 An entry in the contract:
 
@@ -89,17 +95,9 @@ An entry in the contract:
     - `numbersArray`
     - `string`
     - `stringsArray`
-- `preset`: (_optional_)
-  - value if `process.env` variable is not found
-  - doesn't have to be the same type as `type`
+- `required`: (_optional_, default: `true`) `process.env` variable is not found
 - `transform`: (_optional_) function to transform the cast variable
 - `validator`: (_optional_) function to validate the cast and transformed variable
-
-Global options:
-
-- `strict`: (_default: `true`_) if the `process.env` variable is not found
-  - `true`: throws an error
-  - `false`: use `preset` (throws an error if there is no `preset`)
 
 ### Transform
 

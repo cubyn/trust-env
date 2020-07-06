@@ -5,15 +5,15 @@ import { EntryNotUniqueError } from './errors/entry-not-unique-error';
 import { EntryTypeNotFoundError } from './errors/entry-type-not-found-error';
 import { EntryValidatorNotSucceededError } from './errors/entry-validator-not-succeeded-error';
 import { EntryValueNotFoundError } from './errors/entry-value-not-found-error';
-import { Contract, CastType, EntryKey, Variables, Options } from './types';
+import { Contract, CastType, EntryKey, Variables } from './types';
 
-const assertEntriesPresence = (contract: Contract) => {
+const assertEntriesPresence = (contract: Contract): void => {
   if (isJs.not.existy(contract) || isJs.empty(contract)) {
     throw new ContractNotFoundError();
   }
 };
 
-const assertEntriesUnicity = (contract: Contract) => {
+const assertEntriesUnicity = (contract: Contract): void => {
   const duplicates = contract
     .map(({ key }) => key)
     .reduce((acc, key, i, arr) => {
@@ -30,6 +30,10 @@ const assertEntriesUnicity = (contract: Contract) => {
 };
 
 const castToType = (value: string, type: CastType) => {
+  if (value === undefined) {
+    return;
+  }
+
   switch (type) {
     case 'stringsArray':
       return value.split(',').map((item) => item.toString());
@@ -54,9 +58,10 @@ const castToType = (value: string, type: CastType) => {
   }
 };
 
-const extractEnvVariables = (contract: Contract, options: Options) =>
+const extractEnvVariables = (contract: Contract): Variables =>
   contract.reduce((acc, entry) => {
-    const { key, type, preset, transform, validator } = entry;
+    const { key, type, required, transform, validator } = entry;
+    const isRequired = required === false ? false : true;
 
     if (isJs.falsy(key)) {
       throw new EntryKeyNotFoundError(entry);
@@ -66,29 +71,23 @@ const extractEnvVariables = (contract: Contract, options: Options) =>
       throw new EntryTypeNotFoundError(entry);
     }
 
-    let rawValue = process.env[key];
+    const rawValue = process.env[key];
 
-    if (!rawValue) {
-      if (options.strict) {
-        throw new EntryValueNotFoundError(entry);
-      }
-
-      if (preset) {
-        rawValue = preset;
-      } else {
-        throw new EntryValueNotFoundError(entry);
-      }
+    if (!rawValue && isRequired) {
+      throw new EntryValueNotFoundError(entry);
     }
 
     let value = castToType(rawValue as string, type);
 
-    if (transform) {
-      value = transform({ value, entry, contract, isJs });
-    }
+    if (value) {
+      if (transform) {
+        value = transform({ value, entry, contract, isJs });
+      }
 
-    if (validator) {
-      if (isJs.not.truthy(validator({ value, entry, contract, isJs }))) {
-        throw new EntryValidatorNotSucceededError(entry);
+      if (validator) {
+        if (isJs.not.truthy(validator({ value, entry, contract, isJs }))) {
+          throw new EntryValidatorNotSucceededError(entry);
+        }
       }
     }
 

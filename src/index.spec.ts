@@ -10,6 +10,7 @@ describe('src/index.ts', () => {
     process.env.DISABLED_USERS_PID = '321,987,654';
     process.env.LIMIT_DATE = '1/1/2020';
     process.env.DEFAULT_USER = '{"name": "Foo"}';
+    process.env.ROOT_PASSWORD;
   });
 
   it('should work', () => {
@@ -17,7 +18,6 @@ describe('src/index.ts', () => {
       {
         key: 'API_URL',
         type: 'string',
-        preset: 'https://endpoint-a.pi/v1',
       },
       {
         key: 'API_TOKEN',
@@ -41,6 +41,11 @@ describe('src/index.ts', () => {
         key: 'DEFAULT_USER',
         type: 'json',
         validator: ({ value, isJs }) => isJs.propertyDefined(value, 'name'),
+      },
+      {
+        key: 'ROOT_PASSWORD',
+        type: 'string',
+        required: false,
       },
     ];
 

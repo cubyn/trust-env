@@ -1,11 +1,9 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  // globalSetup: './tests/setup.ts',
-  // setupFilesAfterEnv: ['./tests/setup-after-env.ts'],
   coverageDirectory: './coverage',
   collectCoverageFrom: ['src/**/*.ts'],
-  reporters: ['default', 'jest-junit'],
+  reporters: ['default'],
   coverageThreshold: {
     global: {
       branches: 33,
