@@ -20,8 +20,6 @@ export type CastType =
 
 export type EntryKey = string;
 
-export type EntryPreset = any;
-
 type EntryFnParams = {
   value: any;
   entry: Entry;
@@ -32,13 +30,9 @@ type EntryFnParams = {
 export type Entry = {
   key: EntryKey;
   type: CastType;
-  preset?: EntryPreset;
+  required?: boolean;
   validator?: ({ value, entry, contract, isJs }: EntryFnParams) => boolean;
   transform?: ({ value, entry, contract, isJs }: EntryFnParams) => any;
 };
 
 export type Contract = Entry[];
-
-export type Options = {
-  strict: boolean;
-};

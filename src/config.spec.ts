@@ -1,5 +1,3 @@
-// import { EntryKeyNotFoundError } from './errors/entry-key-not-found-error';
-// import { EntryTypeNotFoundError } from './errors/entry-type-not-found-error';
 import { ContractNotFoundError } from './errors/contract-not-found-error';
 import { EntryNotUniqueError } from './errors/entry-not-unique-error';
 import { EntryNotValidError } from './errors/entry-not-valid-error';
@@ -13,7 +11,7 @@ describe('#config', () => {
     process.env.MYSQL_HOST = 'localhost';
   });
 
-  it('should returns functions and variables', () => {
+  it('should return functions and variables', () => {
     const contract: Contract = [
       {
         key: 'MYSQL_HOST',
@@ -29,23 +27,17 @@ describe('#config', () => {
   });
 
   describe('contract validation', () => {
-    // describe('when a contract is not given', () => {
-    //   it('should throws with ContractNotFoundError', () => {
-    //     expect(() => TrustEnv()).toThrow(ContractNotFoundError);
-    //   });
-    // });
-
     describe('when the contract is empty', () => {
-      it('should throws with ContractNotFoundError', () => {
+      it('should throw with ContractNotFoundError', () => {
         expect(() => TrustEnv([])).toThrow(ContractNotFoundError);
       });
     });
 
     describe('when the contract has duplicates entries', () => {
-      it('should throws with EntryNotUniqueError', () => {
+      it('should throw with EntryNotUniqueError', () => {
         const contract: Contract = [
           { key: 'MYSQL_HOST', type: 'string' },
-          { key: 'MYSQL_HOST', type: 'string' },
+          { key: 'MYSQL_HOST', type: 'integer' },
         ];
 
         expect(() => TrustEnv(contract)).toThrow(EntryNotUniqueError);
@@ -55,8 +47,8 @@ describe('#config', () => {
 
   describe('entries validation', () => {
     describe('when the value is not found', () => {
-      describe('when strict option is true', () => {
-        it('should throws with EntryValueNotFoundError', () => {
+      describe('when the value is required', () => {
+        it('should throw with EntryValueNotFoundError', () => {
           const contract: Contract = [
             {
               key: 'NONEXISTENT',
@@ -68,80 +60,49 @@ describe('#config', () => {
         });
       });
 
-      describe('when strict option is false', () => {
-        describe('when preset property is found', () => {
-          it('should use the preset', () => {
-            const contract: Contract = [
-              {
-                key: 'NONEXISTENT',
-                type: 'string',
-                preset: 'EXISTS',
-              },
-            ];
+      describe('when the value is not required', () => {
+        it('should return undefined', () => {
+          const contract: Contract = [
+            {
+              key: 'NONEXISTENT',
+              type: 'string',
+              required: false,
+            },
+          ];
 
-            const env = TrustEnv(contract, { strict: false });
+          const env = TrustEnv(contract);
 
-            expect(env.get('NONEXISTENT')).toBe('EXISTS');
-          });
-        });
-
-        describe('when type property is not found ', () => {
-          it('should throws with EntryValueNotFoundError', () => {
-            const contract: Contract = [
-              {
-                key: 'NONEXISTENT',
-                type: 'string',
-              },
-            ];
-
-            expect(() => TrustEnv(contract, { strict: false })).toThrow(EntryValueNotFoundError);
-          });
+          expect(env.get('NONEXISTENT')).toBeUndefined();
         });
       });
     });
+  });
+});
 
-    // describe('when key property is not found', () => {
-    //   it('should throws with EntryKeyNotFoundError', () => {
-    //     const contract: Contract = [{ type: 'string' }];
+describe('when validator function does not return true', () => {
+  it('should throw with EntryValidatorNotSucceededError', () => {
+    const contract: Contract = [
+      {
+        key: 'MYSQL_HOST',
+        type: 'string',
+        validator: () => false,
+      },
+    ];
 
-    //     expect(() => TrustEnv(contract)).toThrow(EntryKeyNotFoundError);
-    //   });
-    // });
+    expect(() => TrustEnv(contract)).toThrow(EntryValidatorNotSucceededError);
+  });
+});
 
-    // describe('when type property is not found', () => {
-    //   it('should throws with EntryTypeNotFoundError', () => {
-    //     const contract: Contract = [{ key: 'MYSQL_HOST' }];
+describe('when validator function returns true', () => {
+  it('should not throw', () => {
+    const contract: Contract = [
+      {
+        key: 'MYSQL_HOST',
+        type: 'string',
+        validator: () => true,
+      },
+    ];
 
-    //     expect(() => TrustEnv(contract)).toThrow(EntryTypeNotFoundError);
-    //   });
-    // });
-
-    describe('when validator function does not return true', () => {
-      it('should throws with EntryValidatorNotSucceededError', () => {
-        const contract: Contract = [
-          {
-            key: 'MYSQL_HOST',
-            type: 'string',
-            validator: () => false,
-          },
-        ];
-
-        expect(() => TrustEnv(contract)).toThrow(EntryValidatorNotSucceededError);
-      });
-    });
-
-    describe('when validator function returns true', () => {
-      it('does not throws', () => {
-        const contract: Contract = [
-          {
-            key: 'MYSQL_HOST',
-            type: 'string',
-            validator: () => true,
-          },
-        ];
-
-        expect(() => TrustEnv(contract)).not.toThrow(EntryNotValidError);
-      });
-    });
+    expect(() => TrustEnv(contract)).not.toThrow(EntryNotValidError);
   });
 });

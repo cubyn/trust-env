@@ -1,10 +1,10 @@
 import { assertEntriesPresence, assertEntriesUnicity, extractEnvVariables } from './utils';
-import { Contract, TrustEnvLib, Variables, Options } from './types';
+import { Contract, TrustEnvLib, Variables } from './types';
 
-export = (contract: Contract, options: Options = { strict: true }): TrustEnvLib => {
+export = (contract: Contract): TrustEnvLib => {
   assertEntriesPresence(contract);
   assertEntriesUnicity(contract);
-  const VARIABLES = extractEnvVariables(contract, options);
+  const VARIABLES = extractEnvVariables(contract);
 
   return {
     get: get(VARIABLES),
