@@ -3,8 +3,7 @@ import { EntryNotUniqueError } from './errors/entry-not-unique-error';
 import { EntryNotValidError } from './errors/entry-not-valid-error';
 import { EntryValidatorNotSucceededError } from './errors/entry-validator-not-succeeded-error';
 import { EntryValueNotFoundError } from './errors/entry-value-not-found-error';
-import { Contract } from './types';
-import TrustEnv from '.';
+import TrustEnv, { Contract } from '.';
 
 describe('#config', () => {
   beforeEach(() => {
