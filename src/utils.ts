@@ -5,7 +5,7 @@ import { EntryNotUniqueError } from './errors/entry-not-unique-error';
 import { EntryTypeNotFoundError } from './errors/entry-type-not-found-error';
 import { EntryValidatorNotSucceededError } from './errors/entry-validator-not-succeeded-error';
 import { EntryValueNotFoundError } from './errors/entry-value-not-found-error';
-import { Contract, CastType, EntryKey, Variables } from './types';
+import { Contract, CastType, Variables } from '.';
 
 const assertEntriesPresence = (contract: Contract): void => {
   if (isJs.not.existy(contract) || isJs.empty(contract)) {
@@ -22,7 +22,7 @@ const assertEntriesUnicity = (contract: Contract): void => {
       }
 
       return acc;
-    }, [] as EntryKey[]);
+    }, [] as string[]);
 
   if (duplicates.length) {
     throw new EntryNotUniqueError(contract, duplicates);

@@ -1,4 +1,4 @@
-import { Entry } from '../types';
+import { Entry } from '..';
 
 export class EntryValidatorNotSucceededError extends Error {
   entry: Entry;

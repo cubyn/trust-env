@@ -1,7 +1,44 @@
 import { assertEntriesPresence, assertEntriesUnicity, extractEnvVariables } from './utils';
-import { Contract, TrustEnvLib, Variables } from './types';
 
-export = (contract: Contract): TrustEnvLib => {
+export type Variables = {
+  [key: string]: any;
+};
+
+export type TrustEnvLib = Variables & {
+  get: any;
+  getPrefix: any;
+};
+
+type EntryFnParams = {
+  value: any;
+  entry: Entry;
+  contract: Contract;
+  isJs: Is;
+};
+
+export type CastType =
+  | 'boolean'
+  | 'date'
+  | 'integer'
+  | 'integersArray'
+  | 'json'
+  | 'number'
+  | 'numbersArray'
+  | 'string'
+  | 'stringsArray';
+
+export type Entry = {
+  key: string;
+  type: CastType;
+  required?: boolean;
+  preset?: string;
+  validator?: ({ value, entry, contract, isJs }: EntryFnParams) => boolean;
+  transform?: ({ value, entry, contract, isJs }: EntryFnParams) => any;
+};
+
+export type Contract = Entry[];
+
+export default (contract: Contract): TrustEnvLib => {
   assertEntriesPresence(contract);
   assertEntriesUnicity(contract);
   const VARIABLES = extractEnvVariables(contract);
@@ -13,19 +50,19 @@ export = (contract: Contract): TrustEnvLib => {
   };
 };
 
-const get = (variables: any) => (keys: any) => {
+const get = (variables: Variables) => (keys: string | string[]): string | Variables => {
   if (Array.isArray(keys)) {
     return keys.reduce((acc, key) => {
       acc[key] = variables[key];
 
       return acc;
-    }, {});
+    }, {} as Variables);
   }
 
   return variables[keys];
 };
 
-const getPrefix = (variables: any) => (prefix: any) => {
+const getPrefix = (variables: Variables) => (prefix: string): Variables => {
   const variablesEntries = Object.entries(variables);
 
   return variablesEntries.reduce((acc, [key, value]) => {

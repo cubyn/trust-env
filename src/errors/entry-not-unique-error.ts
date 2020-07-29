@@ -1,10 +1,10 @@
-import { Contract, EntryKey } from '../types';
+import { Contract } from '..';
 
 export class EntryNotUniqueError extends Error {
   contract: Contract;
-  keys: EntryKey[];
+  keys: string[];
 
-  constructor(contract: Contract, keys: EntryKey[]) {
+  constructor(contract: Contract, keys: string[]) {
     super(`Entries with keys: ${keys} are not uniques`);
 
     this.name = this.constructor.name;

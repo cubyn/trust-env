@@ -1,4 +1,4 @@
-import { Entry } from '../types';
+import { Entry } from '..';
 
 export class EntryTransformNotFunctionError extends Error {
   entry: Entry;

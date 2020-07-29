@@ -1,4 +1,4 @@
-import { Contract } from './types';
+import { Contract } from '.';
 import TrustEnv from '.';
 
 describe('src/index.ts', () => {
@@ -85,5 +85,9 @@ describe('src/index.ts', () => {
     });
     expect(env.get('DISABLED_USERS_PID')).toBeUndefined();
     expect(env.get('THROTTLE_MS')).toBeUndefined();
+    expect(env.get(['API_TOKEN', 'API_SSL'])).toEqual({
+      API_TOKEN: '0%f_a+cVF3',
+      API_SSL: false,
+    });
   });
 });

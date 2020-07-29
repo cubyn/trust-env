@@ -1,4 +1,4 @@
-import { Entry } from '../types';
+import { Entry } from '..';
 
 export class EntryKeyNotFoundError extends Error {
   entry: Entry;

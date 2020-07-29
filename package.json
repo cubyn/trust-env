@@ -3,7 +3,7 @@
   "version": "2.1.0",
   "description": "Make process.env usage safe",
   "main": "dist/index.js",
-  "types": "dist/types.d.ts",
+  "types": "dist/index.d.ts",
   "repository": "git@github.com:cubyn/trust-env",
   "license": "MIT",
   "scripts": {
