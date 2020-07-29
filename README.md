@@ -7,7 +7,7 @@ Fails at runtime if contract requirements are not met.
 ## Installation
 
 ```bash
-$ yarn add trust-env
+yarn add trust-env
 ```
 
 ## Usage
@@ -33,9 +33,19 @@ export default TrustEnv([
     type: 'number',
   },
   {
-    key: 'MYSQL_PASSWORD',
-    // Allow process.env.MYSQL_PASSWORD to be undefined
+    key: 'MYSQL_SSL',
+    type: 'string',
+    // Allow process.env.MYSQL_SSL to be not found in process.env
+    // env.MYSQL_SSL returns undefined
     required: false,
+  },
+  {
+    key: 'MYSQL_PASSWORD',
+    type: 'string',
+    // Allow process.env.MYSQL_PASSWORD to be not found in process.env
+    required: false,
+    // env.MYSQL_PASSWORD returns 'root'
+    preset: 'root',
   },
   {
     key: 'DEFAULT_USER',
@@ -96,6 +106,7 @@ An entry in the contract:
     - `string`
     - `stringsArray`
 - `required`: (_optional_, default: `true`) `process.env` variable is not found
+- `preset`: (_optional_) used when `process.env` variable is not found and is not required. Is cast.
 - `transform`: (_optional_) function to transform the cast variable
 - `validator`: (_optional_) function to validate the cast and transformed variable
 

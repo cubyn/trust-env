@@ -10,8 +10,9 @@ describe('src/index.ts', () => {
     process.env.POSSIBLES_ALGORITHMS = 'RSA,aes,Blowfish';
     process.env.DISABLED_USERS_PID = '321,987,654';
     process.env.LIMIT_DATE = '1/1/2020';
-    process.env.DEFAULT_USER = '{"name": "Foo"}';
-    process.env.ROOT_PASSWORD;
+    process.env.MONGODB_DEFAULT_USER = '{"name": "Foo"}';
+    process.env.MONGODB_SSL;
+    process.env.MONGODB_ROOT_PASSWORD;
   });
 
   it('should work', () => {
@@ -43,14 +44,20 @@ describe('src/index.ts', () => {
         type: 'date',
       },
       {
-        key: 'DEFAULT_USER',
+        key: 'MONGODB_DEFAULT_USER',
         type: 'json',
         validator: ({ value, isJs }) => isJs.propertyDefined(value, 'name'),
       },
       {
-        key: 'ROOT_PASSWORD',
+        key: 'MONGODB_SSL',
         type: 'string',
         required: false,
+      },
+      {
+        key: 'MONGODB_ROOT_PASSWORD',
+        type: 'integer',
+        required: false,
+        preset: '123456789',
       },
     ];
 
@@ -67,8 +74,9 @@ describe('src/index.ts', () => {
       PRICES_RANGE: [0.01, 9999.99],
       POSSIBLES_ALGORITHMS: ['RSA', 'AES', 'BLOWFISH'],
       LIMIT_DATE: new Date('1/1/2020'),
-      DEFAULT_USER: { name: 'Foo' },
-      ROOT_PASSWORD: undefined,
+      MONGODB_DEFAULT_USER: { name: 'Foo' },
+      MONGODB_SSL: undefined,
+      MONGODB_ROOT_PASSWORD: 123456789,
     });
     expect(env.getPrefix('API')).toEqual({
       API_URL: 'https://endpoint-a.pi/v3',

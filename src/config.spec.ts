@@ -61,18 +61,37 @@ describe('#config', () => {
       });
 
       describe('when the value is not required', () => {
-        it('should return undefined', () => {
-          const contract: Contract = [
-            {
-              key: 'NONEXISTENT',
-              type: 'string',
-              required: false,
-            },
-          ];
+        describe('when there is a preset', () => {
+          it('should return the preset', () => {
+            const contract: Contract = [
+              {
+                key: 'NONEXISTENT',
+                type: 'string',
+                required: false,
+                preset: 'DEFINED',
+              },
+            ];
 
-          const env = TrustEnv(contract);
+            const env = TrustEnv(contract);
 
-          expect(env.get('NONEXISTENT')).toBeUndefined();
+            expect(env.get('NONEXISTENT')).toBe('DEFINED');
+          });
+        });
+
+        describe('when there is not preset', () => {
+          it('should return undefined', () => {
+            const contract: Contract = [
+              {
+                key: 'NONEXISTENT',
+                type: 'string',
+                required: false,
+              },
+            ];
+
+            const env = TrustEnv(contract);
+
+            expect(env.get('NONEXISTENT')).toBeUndefined();
+          });
         });
       });
     });

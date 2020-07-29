@@ -31,6 +31,7 @@ export type Entry = {
   key: EntryKey;
   type: CastType;
   required?: boolean;
+  preset?: EntryKey;
   validator?: ({ value, entry, contract, isJs }: EntryFnParams) => boolean;
   transform?: ({ value, entry, contract, isJs }: EntryFnParams) => any;
 };
