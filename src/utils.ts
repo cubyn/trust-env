@@ -67,7 +67,7 @@ const castToType = (value: string, type: CastType) => {
 
 const extractEnvVariables = (contract: Contract): Variables =>
   contract.reduce((acc, entry) => {
-    const { key, type, required, transform, validator } = entry;
+    const { key, type, required, preset, transform, validator } = entry;
     const isRequired = required === false ? false : true;
 
     if (isJs.falsy(key)) {
@@ -78,23 +78,27 @@ const extractEnvVariables = (contract: Contract): Variables =>
       throw new EntryTypeNotFoundError(entry);
     }
 
-    const rawValue = process.env[key];
+    let rawValue = process.env[key];
 
-    if (!rawValue && isRequired) {
-      throw new EntryValueNotFoundError(entry);
+    if (!rawValue) {
+      if (isRequired) {
+        throw new EntryValueNotFoundError(entry);
+      }
+
+      if (preset) {
+        rawValue = preset;
+      }
     }
 
     let value = castToType(rawValue as string, type);
 
-    if (value) {
-      if (transform) {
-        value = transform({ value, entry, contract, isJs });
-      }
+    if (transform) {
+      value = transform({ value, entry, contract, isJs });
+    }
 
-      if (validator) {
-        if (isJs.not.truthy(validator({ value, entry, contract, isJs }))) {
-          throw new EntryValidatorNotSucceededError(entry);
-        }
+    if (validator) {
+      if (isJs.not.truthy(validator({ value, entry, contract, isJs }))) {
+        throw new EntryValidatorNotSucceededError(entry);
       }
     }
 
