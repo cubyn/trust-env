@@ -1,5 +1,4 @@
-import { TrustEnvLib } from './types';
-import TrustEnv from '.';
+import TrustEnv, { TrustEnvLib } from '.';
 
 describe('#get', () => {
   let env: TrustEnvLib;

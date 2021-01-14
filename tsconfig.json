@@ -1,18 +1,11 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
-    "module": "commonjs",
-    "target": "esnext",
-    "moduleResolution": "node",
-    "outDir": "dist",
-    "allowJs": false,
     "declaration": true,
     "esModuleInterop": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "removeComments": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
     "strict": true,
-    "strictNullChecks": true
-  },
-  "exclude": ["**/*.spec.ts", "tests/"]
+    "target": "ES2020"
+  }
 }
