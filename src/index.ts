@@ -1,10 +1,10 @@
 import { assertEntriesPresence, assertEntriesUnicity, extractEnvVariables } from './utils';
 
-export type Variables = {
+export type Variables<T = any> = T & {
   [key: string]: any;
 };
 
-export type TrustEnvLib = Variables & {
+export type TrustEnvLib<T = any> = Variables<T> & {
   get: any;
   getPrefix: any;
 };
@@ -38,7 +38,7 @@ export type Entry = {
 
 export type Contract = Entry[];
 
-export default (contract: Contract): TrustEnvLib => {
+export default <T = any>(contract: Contract): TrustEnvLib<T> => {
   assertEntriesPresence(contract);
   assertEntriesUnicity(contract);
   const VARIABLES = extractEnvVariables(contract);
