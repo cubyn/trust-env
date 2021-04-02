@@ -86,6 +86,42 @@ assert(process.env.MYSQL_HOST, Error, 'Missing env var [MYSQL_HOST]');
 // ...
 ```
 
+## Typing
+
+```ts
+// src/env.ts
+
+import dotenv from 'dotenv';
+import TrustEnv from 'trust-env';
+
+dotenv.config();
+
+type Env = {
+  BASE_API_URL: string;
+  APPLICATION_KEY: string;
+};
+
+/* pass your type as a generic */
+export default TrustEnv<Env>([
+  { key: 'BASE_API_URL', type: 'string' },
+  { key: 'APPLICATION_KEY', type: 'string' },
+]);
+```
+
+```ts
+// src/anywhere.ts
+
+import env from '@env';
+
+interface Environment {
+  BASE_API_URL: string;
+}
+
+export const myMethod = (environment: Environment = env) => {
+  console.log(environment.BASE_API_URL);
+};
+```
+
 ## Features
 
 Caches `process.env` variables to work only with it (if `process.env` is updated, changes will have no effect)
