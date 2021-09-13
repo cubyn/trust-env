@@ -85,7 +85,7 @@ const extractEnvVariables = (contract: Contract): Variables =>
         throw new EntryValueNotFoundError(entry);
       }
 
-      if (preset) {
+      if (preset !== undefined) {
         rawValue = preset;
       }
     }
