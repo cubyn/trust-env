@@ -34,6 +34,13 @@ const castToType = (value: string, type: CastType) => {
     return;
   }
 
+  if (
+    value === '' &&
+    (type === 'stringsArray' || type === 'integersArray' || type === 'numbersArray')
+  ) {
+    return [];
+  }
+
   switch (type) {
     case 'stringsArray':
       return value.split(',').map((item) => item.toString());
