@@ -59,6 +59,18 @@ describe('src/index.ts', () => {
         required: false,
         preset: '123456789',
       },
+      {
+        key: 'ADDITIONAL_CONNECTION_PROPERTIES',
+        type: 'string',
+        required: false,
+        preset: '',
+      },
+      {
+        key: 'EXCLUSIONS',
+        type: 'integersArray',
+        required: false,
+        preset: '',
+      },
     ];
 
     const env = TrustEnv(contract);
@@ -77,6 +89,8 @@ describe('src/index.ts', () => {
       MONGODB_DEFAULT_USER: { name: 'Foo' },
       MONGODB_SSL: undefined,
       MONGODB_ROOT_PASSWORD: 123456789,
+      ADDITIONAL_CONNECTION_PROPERTIES: '',
+      EXCLUSIONS: [],
     });
     expect(env.getPrefix('API')).toEqual({
       API_URL: 'https://endpoint-a.pi/v3',
