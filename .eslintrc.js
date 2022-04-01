@@ -16,6 +16,6 @@ module.exports = {
   },
   rules: {
     // Turn on again when TS is well accepted
-    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-explicit-any': 'error',
   },
 };

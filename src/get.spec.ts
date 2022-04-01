@@ -1,22 +1,23 @@
 import TrustEnv, { TrustEnvLib } from '.';
 
 describe('#get', () => {
-  let env: TrustEnvLib;
+  const contract = [
+    {
+      key: 'MYSQL_HOST',
+      type: 'string',
+    },
+    {
+      key: 'MYSQL_PORTS',
+      type: 'integersArray',
+    },
+  ] as const;
+  let env: TrustEnvLib<typeof contract>;
 
   beforeAll(() => {
     process.env.MYSQL_HOST = 'localhost';
     process.env.MYSQL_PORTS = '3306,3309';
 
-    env = TrustEnv([
-      {
-        key: 'MYSQL_HOST',
-        type: 'string',
-      },
-      {
-        key: 'MYSQL_PORTS',
-        type: 'integersArray',
-      },
-    ]);
+    env = TrustEnv(contract);
   });
 
   describe('when there is one key', () => {

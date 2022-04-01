@@ -1,9 +1,9 @@
-import { Entry } from '..';
+import { CastType, Entry } from '..';
 
 export class EntryTransformNotFunctionError extends Error {
-  entry: Entry;
+  entry: Entry<string, CastType>;
 
-  constructor(entry: Entry) {
+  constructor(entry: Entry<string, CastType>) {
     super(`Entry transform is not a function: ${JSON.stringify(entry, null, 2)}`);
 
     this.name = this.constructor.name;

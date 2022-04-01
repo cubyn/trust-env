@@ -1,5 +1,5 @@
-import { Contract } from '.';
-import TrustEnv from '.';
+import { expectTypeOf } from 'expect-type';
+import TrustEnv, { GetEntryValue, GetEntryValueByPrefix, TrustEnvLib } from '.';
 
 describe('src/index.ts', () => {
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('src/index.ts', () => {
   });
 
   it('should work', () => {
-    const contract: Contract = [
+    const env = TrustEnv([
       {
         key: 'API_URL',
         type: 'string',
@@ -36,7 +36,7 @@ describe('src/index.ts', () => {
       {
         key: 'POSSIBLES_ALGORITHMS',
         type: 'stringsArray',
-        transform: ({ value }) => value.map((item: string) => item.toUpperCase()),
+        transform: (params) => params.value.map((item: string) => item.toUpperCase()),
         validator: ({ isJs }) => isJs.existy('AES'),
       },
       {
@@ -71,12 +71,28 @@ describe('src/index.ts', () => {
         required: false,
         preset: '',
       },
-    ];
-
-    const env = TrustEnv(contract);
+    ]);
 
     process.env.API_TOKEN = undefined;
 
+    // TrustEnv()
+    type OriginalContract = typeof env extends TrustEnvLib<infer P> ? P : never;
+    expectTypeOf(env).toEqualTypeOf<{
+      get: GetEntryValue<OriginalContract>;
+      getPrefix: GetEntryValueByPrefix<OriginalContract>;
+      API_URL: string;
+      API_TOKEN: string;
+      API_SSL: boolean;
+      PRICES_RANGE: number[];
+      POSSIBLES_ALGORITHMS: string[];
+      LIMIT_DATE: Date;
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      MONGODB_DEFAULT_USER: object;
+      MONGODB_SSL: string;
+      MONGODB_ROOT_PASSWORD: number;
+      ADDITIONAL_CONNECTION_PROPERTIES: string;
+      EXCLUSIONS: number[];
+    }>();
     expect(env).toEqual({
       get: expect.any(Function),
       getPrefix: expect.any(Function),
@@ -92,13 +108,33 @@ describe('src/index.ts', () => {
       ADDITIONAL_CONNECTION_PROPERTIES: '',
       EXCLUSIONS: [],
     });
-    expect(env.getPrefix('API')).toEqual({
+
+    // getPrefix()
+    const getByPrefix = env.getPrefix('API');
+    expectTypeOf(getByPrefix.API_SSL).toEqualTypeOf<boolean>();
+    expectTypeOf(getByPrefix.API_URL).toEqualTypeOf<string>();
+
+    expect(getByPrefix).toEqual({
       API_URL: 'https://endpoint-a.pi/v3',
       API_TOKEN: '0%f_a+cVF3',
       API_SSL: false,
     });
+
+    // get()
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
+    // @ts-expect-error
     expect(env.get('DISABLED_USERS_PID')).toBeUndefined();
+    // @ts-expect-error
     expect(env.get('THROTTLE_MS')).toBeUndefined();
+    // @ts-expect-error
+    expect(env.get(['THROTTLE_MS'])).toMatchObject({ THROTTLE_MS: undefined });
+    expectTypeOf(env.get('API_TOKEN')).toEqualTypeOf<string>();
+    expectTypeOf(env.get('API_SSL')).toEqualTypeOf<boolean>();
+    expectTypeOf(env.get('PRICES_RANGE')).toEqualTypeOf<number[]>();
+    expectTypeOf(env.get(['PRICES_RANGE', 'API_SSL'])).toEqualTypeOf<{
+      PRICES_RANGE: number[];
+      API_SSL: boolean;
+    }>();
     expect(env.get(['API_TOKEN', 'API_SSL'])).toEqual({
       API_TOKEN: '0%f_a+cVF3',
       API_SSL: false,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import isJs from 'is_js';
 
 type Scalar = 'string' | 'number' | 'integer' | 'boolean';

@@ -5,7 +5,7 @@ import { EntryNotUniqueError } from './errors/entry-not-unique-error';
 import { EntryTypeNotFoundError } from './errors/entry-type-not-found-error';
 import { EntryValidatorNotSucceededError } from './errors/entry-validator-not-succeeded-error';
 import { EntryValueNotFoundError } from './errors/entry-value-not-found-error';
-import { Contract, CastType, Variables } from '.';
+import { Contract, CastType, ContractVariables, Entry, ContractKeys, CastTypeToPrimitive } from '.';
 
 const assertEntriesPresence = (contract: Contract): void => {
   if (isJs.not.existy(contract) || isJs.empty(contract)) {
@@ -29,7 +29,7 @@ const assertEntriesUnicity = (contract: Contract): void => {
   }
 };
 
-const castToType = (value: string, type: CastType) => {
+const castToType = (value: string, type: CastType): CastTypeToPrimitive[CastType] | undefined => {
   if (value === undefined) {
     return;
   }
@@ -72,10 +72,13 @@ const castToType = (value: string, type: CastType) => {
   }
 };
 
-const extractEnvVariables = (contract: Contract): Variables =>
-  contract.reduce((acc, entry) => {
-    const { key, type, required, preset, transform, validator } = entry;
-    const isRequired = required === false ? false : true;
+const extractEnvVariables = <C extends Contract>(contract: C): ContractVariables<C> => {
+  return contract.reduce((acc, entry) => {
+    const { key, type, required, preset, transform, validator } = entry as Entry<
+      ContractKeys<C>,
+      CastType
+    >;
+    const isRequired = required !== false;
 
     if (isJs.falsy(key)) {
       throw new EntryKeyNotFoundError(entry);
@@ -112,6 +115,7 @@ const extractEnvVariables = (contract: Contract): Variables =>
     acc[key] = value;
 
     return acc;
-  }, {} as Variables);
+  }, {} as ContractVariables<C>);
+};
 
 export { assertEntriesUnicity, assertEntriesPresence, extractEnvVariables };
